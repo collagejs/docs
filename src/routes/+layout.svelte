@@ -21,7 +21,7 @@
 <div class="position-absolute end-0 m-3">
 	<PaletteToggler bind:name={paletteName} />
 </div>
-<div class={["root", paletteName && `cjs-theme-${paletteName}`]}>
+<div class={["root", paletteName && `cjs-palette-${paletteName}`]}>
 	<div class="container">
 		<div class="content d-flex flex-column">
 			{@render children()}

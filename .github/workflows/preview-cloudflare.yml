@@ -51,7 +51,7 @@ jobs:
           script: |
             const prNumber = context.issue.number;
             const branchName = `preview-${prNumber}`;
-            const previewUrl = `https://${branchName}.collagejs.dev`;
+            const previewUrl = `https://${branchName}-collagejs.webjose.workers.dev`;
             const commentTitle = '🚀 **Preview deployment ready!**';
             
             // Look for existing preview comment

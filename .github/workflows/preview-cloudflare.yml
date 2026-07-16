@@ -42,7 +42,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ secrets.CF_ACC_ID }}
-          command: deploy
+          command: versions upload --preview-alias preview-${{ github.event.pull_request.number }}
 
       - name: Update PR with Preview URL
         if: steps.deploy-preview.outcome == 'success'

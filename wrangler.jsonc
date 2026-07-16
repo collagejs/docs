@@ -6,7 +6,10 @@
     "nodejs_als"
   ],
   "compatibility_date": "2026-07-14",
-  "route": "*.collagejs.dev/*",
+  "routes": [
+    "collagejs.dev/*",
+    "www.collagejs.dev/*"
+  ],
   "assets": {
     "binding": "ASSETS",
     "directory": ".svelte-kit/cloudflare"

@@ -1,0 +1,15 @@
+@import "./bs";
+
+@import "../../node_modules/@collagejs/core/dist/theme/theme.css" layer(CollageJS);
+
+@layer Bootstrap, CollageJS;
+
+pre {
+    font-family: monospace;
+
+    &.code-block {
+        background-color: rgba(var(--cjs-black-rgb), 0.25);
+        padding: 1em 2em;
+        border-radius: var(--cjs-radius);
+    }
+}

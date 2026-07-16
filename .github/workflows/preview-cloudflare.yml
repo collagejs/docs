@@ -1,0 +1,100 @@
+name: Deploy PR Preview to Cloudflare Workers
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - '.gitignore'
+      - '.npmrc'
+      - '.prettierignore'
+      - '.prettierrc'
+      - 'AGENTS.md'
+      - 'eslint.config.js'
+      - 'LICENSE'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'README.md'
+      - 'tsconfig.json'
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy Preview to Cloudflare Workers
+        id: deploy-preview
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACC_ID }}
+          command: versions upload --preview-alias preview-${{ github.event.pull_request.number }}
+
+      - name: Update PR with Preview URL
+        if: steps.deploy-preview.outcome == 'success'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = context.issue.number;
+            const branchName = `preview-${prNumber}`;
+            const previewUrl = `https://${branchName}.collagejs.dev`;
+            const commentTitle = '🚀 **Preview deployment ready!**';
+            
+            // Look for existing preview comment
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber
+            });
+            
+            const botComment = comments.data.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.body.includes(commentTitle)
+            );
+            
+            // Extract deployment count from existing comment or start at 1
+            let deploymentCount = 1;
+            if (botComment) {
+              const match = botComment.body.match(/(\d+) deployment/);
+              deploymentCount = match ? parseInt(match[1]) + 1 : 2;
+            }
+            
+            const commentBody = [
+              `${commentTitle} (${deploymentCount} ${deploymentCount === 1 ? 'deployment' : 'deployments'})`,
+              '',
+              `📍 **Preview URL:** ${previewUrl}`,
+              '',
+              '*This preview updates automatically when you push new commits to this PR.*'
+            ].join('\n');
+            
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: commentBody
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: commentBody
+              });
+            }

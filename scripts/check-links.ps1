@@ -1,17 +1,23 @@
 #!/usr/bin/env pwsh
 <#
 .SYNOPSIS
-    Checks all Markdown files in src/routes for broken internal links.
+    Checks all Markdown files in src/routes and Svelte files in src/ for broken
+    internal links.
 
 .DESCRIPTION
     Collects every HREF value from all primary-sidebar.json files found under
-    src/routes and uses them as the set of known-good internal paths.
+    src/routes and uses them as the set of known-good internal paths.  In addition,
+    valid paths are derived from explicit (non-dynamic) SvelteKit page route files
+    (e.g. +page.md, +page.svelte) to cover section-root URLs such as / and /docs
+    that do not appear in any sidebar.
 
-    Then it scans every Markdown (.md) file under src/routes and verifies that
-    each absolute internal link (one whose href starts with "/") refers to a path
-    present in that set.  Both HTML anchor elements and Markdown-style links are
-    checked.  External links (http/https) and fragment-only links (#anchor) are
-    skipped.
+    Then it scans:
+      - Every Markdown (.md) file under src/routes: both HTML anchor elements and
+        Markdown-style links ([label](/path)) are checked.
+      - Every Svelte (.svelte) file under src/: only HTML anchor elements are
+        checked (Svelte files do not use Markdown link syntax).
+
+    External links (http/https) and fragment-only links (#anchor) are skipped.
 
     On error the script writes one line per broken link containing the file path,
     line number and the offending href, then exits with code 1.
@@ -48,7 +54,8 @@ $RootDir  = [System.IO.Path]::GetFullPath($RootDir)
 $isCI     = $env:CI -eq 'true'
 $shouldFix = $Fix.IsPresent -and -not $isCI
 
-$routesDir = Join-Path $RootDir 'src' 'routes'
+$srcDir    = Join-Path $RootDir 'src'
+$routesDir = Join-Path $srcDir 'routes'
 
 if (-not (Test-Path $routesDir -PathType Container)) {
     Write-Error "src/routes directory not found at: $routesDir"
@@ -96,6 +103,38 @@ if ($sidebarFiles.Count -eq 0) {
         $rel = $sf.FullName.Replace($RootDir, '').TrimStart([System.IO.Path]::DirectorySeparatorChar, '/')
         Write-Host "  $rel" -ForegroundColor DarkGray
     }
+}
+
+# Also collect valid paths from explicit (non-dynamic) SvelteKit page route files.
+# This ensures that well-known routes such as / and /docs are not flagged as broken
+# even though they do not appear in any primary-sidebar.json.
+$pageRouteFiles = Get-ChildItem -Path $routesDir -Recurse -File |
+    Where-Object { $_.Name -match '^\+page\.' -and $_.DirectoryName -notmatch '\[' }
+
+foreach ($pf in $pageRouteFiles) {
+    $relDir  = $pf.DirectoryName.Replace($routesDir, '').TrimStart([System.IO.Path]::DirectorySeparatorChar, '/')
+    # Strip SvelteKit route groups (parenthesised directory segments) from the path.
+    # @(...) forces the result to be an array so that .Count is always defined.
+    $segments = @(($relDir -split '[/\\]') | Where-Object { $_ -ne '' -and -not $_.StartsWith('(') })
+    $urlPath = if ($segments.Count -eq 0) { '/' } else { '/' + ($segments -join '/') }
+    $null = $validHrefs.Add($urlPath)
+}
+
+# Also add the parent-directory URL for every catch-all ([...slug]) route.
+# In SvelteKit, [...slug] matches the empty slug so the parent's URL is valid too
+# (e.g. /guides is reachable even without an explicit +page file).
+$catchAllDirs = Get-ChildItem -Path $routesDir -Recurse -Directory |
+    Where-Object { $_.Name -match '^\[' } |
+    Where-Object {
+        (Test-Path -LiteralPath (Join-Path $_.FullName '+page.svelte')) -or
+        (Test-Path -LiteralPath (Join-Path $_.FullName '+page.md'))
+    }
+
+foreach ($cad in $catchAllDirs) {
+    $parentRelDir = $cad.Parent.FullName.Replace($routesDir, '').TrimStart([System.IO.Path]::DirectorySeparatorChar, '/')
+    $segments = @(($parentRelDir -split '[/\\]') | Where-Object { $_ -ne '' -and -not $_.StartsWith('(') })
+    $urlPath = if ($segments.Count -eq 0) { '/' } else { '/' + ($segments -join '/') }
+    $null = $validHrefs.Add($urlPath)
 }
 
 Write-Host "Found $($validHrefs.Count) valid HREF(s).`n" -ForegroundColor Cyan
@@ -152,16 +191,20 @@ function Resolve-FixedHref ([string]$BrokenPath, [string]$OriginalHref) {
     return $closest
 }
 
-# ── 3. Scan Markdown files ────────────────────────────────────────────────────
+# Scans a single file for broken internal links, reports errors, and optionally
+# auto-fixes them in-place.
+# $CheckMarkdownLinks — when $true, also checks Markdown-style [label](/path) links
+#                       (appropriate for .md files; Svelte files use HTML only).
+function Scan-FileLinks {
+    param(
+        [System.IO.FileInfo]$SourceFile,
+        [bool]$CheckMarkdownLinks = $false
+    )
 
-$mdFiles     = Get-ChildItem -Path $routesDir -Recurse -Filter '*.md' -File
-$totalErrors = 0
-$fixedCount  = 0
-
-foreach ($mdFile in $mdFiles) {
-    $lines       = Get-Content $mdFile.FullName
+    $lines       = Get-Content -LiteralPath $SourceFile.FullName
     $newLines    = [System.Collections.Generic.List[string]]::new()
     $fileChanged = $false
+    $rel         = $SourceFile.FullName.Replace($RootDir, '').TrimStart([System.IO.Path]::DirectorySeparatorChar, '/')
 
     for ($i = 0; $i -lt $lines.Count; $i++) {
         $lineNum = $i + 1
@@ -194,26 +237,27 @@ foreach ($mdFile in $mdFiles) {
             })
         }
 
-        # ── Markdown links ────────────────────────────────────────────────────
-        foreach ($m in $mdLinkRx.Matches($line)) {
-            $href     = $m.Groups[1].Value
-            $hrefPath = Get-PathWithoutFragment $href
-            if ($validHrefs.Contains($hrefPath)) { continue }
-            $null = $allMatches.Add([PSCustomObject]@{
-                Match    = $m
-                Group    = $m.Groups[1]
-                Href     = $href
-                HrefPath = $hrefPath
-                Kind     = 'Markdown link'
-            })
+        # ── Markdown links (Markdown files only) ─────────────────────────────
+        if ($CheckMarkdownLinks) {
+            foreach ($m in $mdLinkRx.Matches($line)) {
+                $href     = $m.Groups[1].Value
+                $hrefPath = Get-PathWithoutFragment $href
+                if ($validHrefs.Contains($hrefPath)) { continue }
+                $null = $allMatches.Add([PSCustomObject]@{
+                    Match    = $m
+                    Group    = $m.Groups[1]
+                    Href     = $href
+                    HrefPath = $hrefPath
+                    Kind     = 'Markdown link'
+                })
+            }
         }
 
         # ── Report errors and apply fixes in descending index order ──────────
-        $rel = $mdFile.FullName.Replace($RootDir, '').TrimStart([System.IO.Path]::DirectorySeparatorChar, '/')
         foreach ($entry in ($allMatches | Sort-Object { $_.Group.Index } -Descending)) {
             Write-Host "ERROR  ${rel}:${lineNum}" -ForegroundColor Red
-            Write-Host "       $($entry.Kind) href='$($entry.Href)' not found in any sidebar." -ForegroundColor Red
-            $totalErrors++
+            Write-Host "       $($entry.Kind) href='$($entry.Href)' not found in sidebar definitions or page routes." -ForegroundColor Red
+            $script:totalErrors++
 
             if ($shouldFix) {
                 $replacement = Resolve-FixedHref $entry.HrefPath $entry.Href
@@ -223,7 +267,7 @@ foreach ($mdFile in $mdFiles) {
                     $newLine = $newLine.Substring(0, $g.Index) + $replacement + $newLine.Substring($g.Index + $g.Length)
                     $fileChanged = $true
                     Write-Host "  AUTO-FIX: '$($entry.Href)' → '$replacement'" -ForegroundColor Yellow
-                    $fixedCount++
+                    $script:fixedCount++
                 }
             }
         }
@@ -232,10 +276,26 @@ foreach ($mdFile in $mdFiles) {
     }
 
     if ($fileChanged) {
-        Set-Content -Path $mdFile.FullName -Value $newLines
-        $rel = $mdFile.FullName.Replace($RootDir, '').TrimStart([System.IO.Path]::DirectorySeparatorChar, '/')
+        Set-Content -LiteralPath $SourceFile.FullName -Value $newLines
         Write-Host "  Updated: $rel" -ForegroundColor Green
     }
+}
+
+# ── 3. Scan Markdown files in src/routes and Svelte files in src/ ─────────────
+
+$totalErrors = 0
+$fixedCount  = 0
+
+Write-Host 'Scanning Markdown files...' -ForegroundColor Cyan
+$mdFiles = Get-ChildItem -Path $routesDir -Recurse -Filter '*.md' -File
+foreach ($mdFile in $mdFiles) {
+    Scan-FileLinks -SourceFile $mdFile -CheckMarkdownLinks $true
+}
+
+Write-Host 'Scanning Svelte files...' -ForegroundColor Cyan
+$svelteFiles = Get-ChildItem -Path $srcDir -Recurse -Filter '*.svelte' -File
+foreach ($svelteFile in $svelteFiles) {
+    Scan-FileLinks -SourceFile $svelteFile -CheckMarkdownLinks $false
 }
 
 # ── 4. Summary ────────────────────────────────────────────────────────────────

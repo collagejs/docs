@@ -36,7 +36,7 @@ npm create vite@latest -- --template svelte-ts
 ```
 > <Info /> This is not a Vite tutorial, so we'll assume the reader will be able to get to the point where the project is created, configured and running.
 
-As your root project currently stands, you *can* start mounting pieces using the `mountPiece` function from `@collagejs/core`, assuming you proceed to install this package.  If you take this route, you'll be able to manage the mounted pieces as shown in the [introduction](docs/introduction).
+As your root project currently stands, you *can* start mounting pieces using the `mountPiece` function from `@collagejs/core`, assuming you proceed to install this package.  If you take this route, you'll be able to manage the mounted pieces as shown in the [introduction](/docs/introduction).
 
 However and also mentioned in the introduction, there are better ways to do things.  If your chosen template when creating your root project corresponds to a technology covered by an adapter (be it official or not), you can instead proceed to install said adapter.
 

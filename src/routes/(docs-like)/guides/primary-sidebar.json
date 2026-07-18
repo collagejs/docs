@@ -1,1 +1,11 @@
-[]
+[
+    {
+        "title": "Migration",
+        "articles": [
+            {
+                "title": "Migration from single-spa",
+                "href": "/guides/migration-from-single-spa"
+            }
+        ]
+    }
+]

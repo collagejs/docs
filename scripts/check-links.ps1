@@ -97,7 +97,9 @@ Write-Host "Found $($validHrefs.Count) valid HREF(s).`n" -ForegroundColor Cyan
 
 # Regex: HTML anchor href attribute (double-quoted)
 $htmlHrefRx = [regex]'<a\b[^>]*?\bhref="([^"]*)"'
-# Regex: Markdown link [label](href) — skip images (preceded by !)
+# Regex: Markdown link [label](href) where href starts with '/'.
+# Note: link text is matched with [^\]]* which does not support escaped brackets (\]).
+# Images (preceded by !) are excluded via the negative lookbehind (?<!!) .
 $mdLinkRx   = [regex]'(?<!!)\[[^\]]*\]\((/[^)]*)\)'
 
 function Find-ClosestHref ([string]$Broken) {
@@ -108,6 +110,17 @@ function Find-ClosestHref ([string]$Broken) {
         }
     }
     return $null
+}
+
+# Returns the fixed href for a broken path, preserving any fragment (#section).
+function Resolve-FixedHref ([string]$BrokenPath, [string]$OriginalHref) {
+    $closest = Find-ClosestHref $BrokenPath
+    if ($null -eq $closest) { return $null }
+    if ($OriginalHref -match '#') {
+        $fragment = ($OriginalHref -split '#', 2)[1]
+        return "$closest#$fragment"
+    }
+    return $closest
 }
 
 # ── 3. Scan Markdown files ────────────────────────────────────────────────────
@@ -129,7 +142,7 @@ foreach ($mdFile in $mdFiles) {
         # ── HTML anchors ──────────────────────────────────────────────────────
         foreach ($m in $htmlHrefRx.Matches($line)) {
             $href = $m.Groups[1].Value
-            if (-not $href.StartsWith('/')) { continue }           # skip non-absolute
+            if (-not $href.StartsWith('/')) { continue }           # skip links not starting with '/'
             $hrefPath = ($href -split '#', 2)[0]                   # strip fragment
             if ($validHrefs.Contains($hrefPath)) { continue }      # link is valid
 
@@ -139,9 +152,8 @@ foreach ($mdFile in $mdFiles) {
             $totalErrors++
 
             if ($shouldFix) {
-                $closest = Find-ClosestHref $hrefPath
-                if ($null -ne $closest) {
-                    $replacement = if ($href -match '#') { "$closest#$($href -split '#', 2)[1]" } else { $closest }
+                $replacement = Resolve-FixedHref $hrefPath $href
+                if ($null -ne $replacement) {
                     $newLine = $newLine.Replace($href, $replacement)
                     $fileChanged = $true
                     Write-Host "  AUTO-FIX: '$href' → '$replacement'" -ForegroundColor Yellow
@@ -162,9 +174,8 @@ foreach ($mdFile in $mdFiles) {
             $totalErrors++
 
             if ($shouldFix) {
-                $closest = Find-ClosestHref $hrefPath
-                if ($null -ne $closest) {
-                    $replacement = if ($href -match '#') { "$closest#$($href -split '#', 2)[1]" } else { $closest }
+                $replacement = Resolve-FixedHref $hrefPath $href
+                if ($null -ne $replacement) {
                     $newLine = $newLine.Replace($href, $replacement)
                     $fileChanged = $true
                     Write-Host "  AUTO-FIX: '$href' → '$replacement'" -ForegroundColor Yellow

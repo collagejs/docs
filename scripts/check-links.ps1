@@ -106,11 +106,11 @@ Write-Host "Found $($validHrefs.Count) valid HREF(s).`n" -ForegroundColor Cyan
 # Both alternatives are nested under href= so that neither arm can match
 # a standalone quoted string unrelated to an anchor.
 # Group 1 = double-quoted value, group 2 = single-quoted value.
-# Note on PowerShell string escaping: inside a single-quoted PS string,
-# '' (two consecutive single quotes) represents a literal single-quote
-# character ('), so ''([^'']*)'' encodes the regex pattern '([^']*)'
-# which captures a single-quoted href value.
-$htmlHrefRx = [regex]'<a\b[^>]*?\bhref=(?:(?:"([^"]*)")|(?:''([^'']*)''))'
+# Using a double-quoted PS string with backtick-escaped double quotes (`")
+# makes the actual regex pattern explicit and avoids relying on PowerShell's
+# single-quote escape sequence ('').
+# Actual regex: <a\b[^>]*?\bhref=(?:(?:"([^"]*)")|(?:'([^']*)'))
+$htmlHrefRx = [regex]("<a\b[^>]*?\bhref=(?:(?:`"([^`"]*)`")|(?:'([^']*)'))")
 # Regex: Markdown link [label](href) where href starts with '/'.
 # The link text pattern (?:[^\\\]]|\\.)* handles escaped closing brackets (\])
 # per the CommonMark spec:

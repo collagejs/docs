@@ -1,7 +1,9 @@
 import { defineConfig } from 'vitest/config';
+import { join } from 'path';
 import { playwright } from '@vitest/browser-playwright';
 import adapter from '@sveltejs/adapter-cloudflare';
 import { sveltekit } from '@sveltejs/kit/vite';
+import { mdsvex } from 'mdsvex';
 
 export default defineConfig({
 	plugins: [
@@ -9,12 +11,22 @@ export default defineConfig({
 			extensions: ['.svelte', '.md'],
 			compilerOptions: {
 				// Force runes mode for the project, except for libraries. Can be removed in svelte 6.
-				runes: ({ filename }) =>
-					filename.split(/[/\\]/).includes('node_modules') ? undefined : true
+				runes: ({ filename }) => {
+					const parts = filename.split(/[/\\]/);
+					const fileName = parts[parts.length - 1];
+					if (fileName.endsWith('.md')) {
+						console.debug('runes mode for %s: %o', filename, parts);
+					}
+					return parts.includes('node_modules') ||
+						fileName.endsWith('.md') ? undefined : true;
+				}
 			},
-
-			// Explicit Cloudflare Workers target.
-			adapter: adapter()
+			adapter: adapter(),
+			preprocess: mdsvex({
+				extensions: ['.md'],
+				smartypants: true,
+				layout: join(__dirname, './src/lib/md-layouts/MdLayout.svelte'),
+			}),
 		}),
 	],
 	test: {

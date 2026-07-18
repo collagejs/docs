@@ -1,0 +1,108 @@
+[
+    {
+        "title": "Get Started",
+        "articles": [
+            {
+                "title": "Introduction",
+                "href": "/docs/introduction"
+            },
+            {
+                "title": "Project Types",
+                "href": "/docs/project-types"
+            },
+            {
+                "title": "The Root Template",
+                "href": "/docs/the-root-template"
+            },
+            {
+                "title": "Root Projects in Detail",
+                "href": "/docs/root-projects-in-detail"
+            },
+            {
+                "title": "Piece Projects in Detail",
+                "href": "/docs/piece-projects-in-detail"
+            }
+        ]
+    },
+    {
+        "title": "Import Maps",
+        "articles": [
+            {
+                "title": "Overview",
+                "href": "/docs/import-maps-overview"
+            },
+            {
+                "title": "Import Maps in CollageJS",
+                "href": "/docs/import-maps-in-collagejs"
+            },
+            {
+                "title":  "Overriding Import Map Entries",
+                "href": "/docs/overriding-import-map-entries"
+            }
+        ]
+    },
+    {
+        "title": "Framework Adapters",
+        "articles": [
+            {
+                "title": "Definition & Objectives",
+                "href": "/docs/adapter-definition-and-objectives"
+            },
+            {
+                "title": "Official Adapters",
+                "href": "/docs/official-adapters"
+            }
+        ]
+    },
+    {
+        "title": "Advanced Topics",
+        "articles": [
+            {
+                "title": "Configuring @collagejs/imo",
+                "href": "/docs/configuring-collagejs-imo"
+            },
+            {
+                "title": "CorePiece Composition",
+                "href": "/docs/corepiece-composition"
+            },
+            {
+                "title": "CorePiece Relocation and Capabilities",
+                "href": "/docs/corepiece-relocation-and-capabilities"
+            },
+            {
+                "title": "Development Tips & Tricks",
+                "href": "/docs/development-tips-and-tricks"
+            }
+        ]
+    },
+    {
+        "title": "Ecosystem",
+        "articles": [
+            {
+                "title": "Supported Frameworks",
+                "href": "/docs/supported-frameworks"
+            },
+            {
+                "title": "Vite",
+                "articles": [
+                    {
+                        "title": "Overview",
+                        "href": "/docs/vite-overview"
+                    },
+                    {
+                        "title": "Vite-IM Plug-In",
+                        "href": "/docs/vite-im-plugin"
+                    },
+                    {
+                        "title": "Vite-AIM Plug-In",
+                        "href": "/docs/vite-aim-plugin"
+                    },
+                    {
+                        "title": "Vite-CSS Plug-In",
+                        "href": "/docs/vite-css-plugin"
+                    }
+                ]
+            }
+        ]
+    }
+]

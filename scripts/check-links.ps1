@@ -61,15 +61,22 @@ $validHrefs = [System.Collections.Generic.HashSet[string]]::new(
     [System.StringComparer]::Ordinal
 )
 
+# Returns the value of a named property on a PSCustomObject, or $null if absent.
+function Get-PropertyValue ([object]$Obj, [string]$Name) {
+    $prop = $Obj.PSObject.Properties[$Name]
+    if ($null -ne $prop) { return $prop.Value }
+    return $null
+}
+
 function Collect-Hrefs ([object[]]$Items) {
     foreach ($item in $Items) {
-        $hrefProp     = $item.PSObject.Properties['href']
-        $articlesProp = $item.PSObject.Properties['articles']
-        if ($null -ne $hrefProp -and $null -ne $hrefProp.Value -and $hrefProp.Value -ne '') {
-            $null = $validHrefs.Add([string]$hrefProp.Value)
+        $href     = Get-PropertyValue $item 'href'
+        $articles = Get-PropertyValue $item 'articles'
+        if ($null -ne $href -and $href -ne '') {
+            $null = $validHrefs.Add([string]$href)
         }
-        if ($null -ne $articlesProp -and $null -ne $articlesProp.Value) {
-            Collect-Hrefs $articlesProp.Value
+        if ($null -ne $articles) {
+            Collect-Hrefs $articles
         }
     }
 }
@@ -95,12 +102,15 @@ Write-Host "Found $($validHrefs.Count) valid HREF(s).`n" -ForegroundColor Cyan
 
 # ── 2. Helpers ────────────────────────────────────────────────────────────────
 
-# Regex: HTML anchor href attribute (double-quoted)
-$htmlHrefRx = [regex]'<a\b[^>]*?\bhref="([^"]*)"'
+# Regex: HTML anchor href attribute — captures double-quoted (group 1) or
+# single-quoted (group 2) values.
+$htmlHrefRx = [regex]'<a\b[^>]*?\bhref=(?:"([^"]*)")|(?:''([^'']*)'')'
 # Regex: Markdown link [label](href) where href starts with '/'.
 # Link text uses (?:[^\]\\]|\\.)*  to correctly handle escaped closing brackets
-# (\]) that are valid Markdown syntax.  Images (preceded by !) are excluded via
-# the negative lookbehind (?<!!).
+# (\]) per the CommonMark spec.  Images (preceded by !) are excluded via the
+# negative lookbehind (?<!!).
+# Note: this script processes Markdown files line-by-line, so the pattern never
+# spans multiple lines and the multiline behaviour of [^\]] is not a concern.
 $mdLinkRx   = [regex]'(?<!!)\[(?:[^\]\\]|\\.)*\]\((/[^)]*)\)'
 
 # Strips the fragment identifier from a URL path.
@@ -159,13 +169,15 @@ foreach ($mdFile in $mdFiles) {
         # External URLs (http/https) and fragment-only refs (#anchor) do not
         # start with '/' and are therefore naturally excluded.
         foreach ($m in $htmlHrefRx.Matches($line)) {
-            $href = $m.Groups[1].Value
+            # Group 1: double-quoted href; Group 2: single-quoted href
+            $hrefGroup = if ($m.Groups[1].Success) { $m.Groups[1] } else { $m.Groups[2] }
+            $href = $hrefGroup.Value
             if (-not $href.StartsWith('/')) { continue }
             $hrefPath = Get-PathWithoutFragment $href
             if ($validHrefs.Contains($hrefPath)) { continue }
             $null = $allMatches.Add([PSCustomObject]@{
                 Match    = $m
-                Group    = $m.Groups[1]
+                Group    = $hrefGroup
                 Href     = $href
                 HrefPath = $hrefPath
                 Kind     = 'HTML anchor'

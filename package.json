@@ -5,7 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
-		"prebuild": "npm run check && npm run check:links",
+		"prebuild": "npm run check:links && npm run check",
 		"build": "vite build",
 		"preview": "vite preview",
 		"cf:dev": "wrangler dev .svelte-kit/cloudflare/_worker.js",

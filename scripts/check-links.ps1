@@ -102,15 +102,20 @@ Write-Host "Found $($validHrefs.Count) valid HREF(s).`n" -ForegroundColor Cyan
 
 # ── 2. Helpers ────────────────────────────────────────────────────────────────
 
-# Regex: HTML anchor href attribute — captures double-quoted (group 1) or
-# single-quoted (group 2) values.
+# Regex: HTML anchor href attribute.
+# Alternation: group 1 = double-quoted value, group 2 = single-quoted value.
+# Inside a PowerShell single-quoted string, '' is an escaped single quote ('),
+# so [^''] is the character class [^'] (any char except single-quote).
 $htmlHrefRx = [regex]'<a\b[^>]*?\bhref=(?:"([^"]*)")|(?:''([^'']*)'')'
 # Regex: Markdown link [label](href) where href starts with '/'.
-# Link text uses (?:[^\]\\]|\\.)*  to correctly handle escaped closing brackets
-# (\]) per the CommonMark spec.  Images (preceded by !) are excluded via the
-# negative lookbehind (?<!!).
-# Note: this script processes Markdown files line-by-line, so the pattern never
-# spans multiple lines and the multiline behaviour of [^\]] is not a concern.
+# The link text pattern (?:[^\]\\]|\\.)* handles escaped closing brackets (\])
+# per the CommonMark spec:
+#   [^\]\\]  — any character that is neither ] nor \  (character class excludes
+#              both ] and \, listed here as \] and \\ to avoid ambiguity)
+#   \\.      — a backslash followed by any character (escape sequence)
+# Images (preceded by !) are excluded via the negative lookbehind (?<!!).
+# The script processes files line-by-line, so the pattern never spans multiple
+# lines and multiline considerations do not apply.
 $mdLinkRx   = [regex]'(?<!!)\[(?:[^\]\\]|\\.)*\]\((/[^)]*)\)'
 
 # Strips the fragment identifier from a URL path.
@@ -171,6 +176,7 @@ foreach ($mdFile in $mdFiles) {
         foreach ($m in $htmlHrefRx.Matches($line)) {
             # Group 1: double-quoted href; Group 2: single-quoted href
             $hrefGroup = if ($m.Groups[1].Success) { $m.Groups[1] } else { $m.Groups[2] }
+            if (-not $hrefGroup.Success) { continue }              # guard: neither group matched
             $href = $hrefGroup.Value
             if (-not $href.StartsWith('/')) { continue }
             $hrefPath = Get-PathWithoutFragment $href

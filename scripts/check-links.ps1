@@ -106,8 +106,10 @@ Write-Host "Found $($validHrefs.Count) valid HREF(s).`n" -ForegroundColor Cyan
 # Both alternatives are nested under href= so that neither arm can match
 # a standalone quoted string unrelated to an anchor.
 # Group 1 = double-quoted value, group 2 = single-quoted value.
-# Inside a PowerShell single-quoted string, '' is an escaped single quote ('),
-# so ''([^'']*)'' is the regex pattern '([^']*)' (single-quoted capture).
+# Note on PowerShell string escaping: inside a single-quoted PS string,
+# '' (two consecutive single quotes) represents a literal single-quote
+# character ('), so ''([^'']*)'' encodes the regex pattern '([^']*)'
+# which captures a single-quoted href value.
 $htmlHrefRx = [regex]'<a\b[^>]*?\bhref=(?:(?:"([^"]*)")|(?:''([^'']*)''))'
 # Regex: Markdown link [label](href) where href starts with '/'.
 # The link text pattern (?:[^\\\]]|\\.)* handles escaped closing brackets (\])
@@ -115,7 +117,8 @@ $htmlHrefRx = [regex]'<a\b[^>]*?\bhref=(?:(?:"([^"]*)")|(?:''([^'']*)''))'
 #   [^\\\]]  — any character that is neither \ nor ]
 #              (\\  = literal backslash;  \] = literal closing bracket)
 #   \\.      — a backslash followed by any character (escape sequence)
-# Images (preceded by !) are excluded via the negative lookbehind (?<!!).
+# Images (which use ![text](url) syntax) are excluded via the negative
+# lookbehind (?<!!) which fails if the [ is immediately preceded by !.
 # The script processes files line-by-line, so the pattern never spans multiple
 # lines and multiline considerations do not apply.
 $mdLinkRx   = [regex]'(?<!!)\[(?:[^\\\]]|\\.)*\]\((/[^)]*)\)'

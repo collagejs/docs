@@ -98,9 +98,18 @@ Write-Host "Found $($validHrefs.Count) valid HREF(s).`n" -ForegroundColor Cyan
 # Regex: HTML anchor href attribute (double-quoted)
 $htmlHrefRx = [regex]'<a\b[^>]*?\bhref="([^"]*)"'
 # Regex: Markdown link [label](href) where href starts with '/'.
-# Note: link text is matched with [^\]]* which does not support escaped brackets (\]).
-# Images (preceded by !) are excluded via the negative lookbehind (?<!!) .
-$mdLinkRx   = [regex]'(?<!!)\[[^\]]*\]\((/[^)]*)\)'
+# Link text uses (?:[^\]\\]|\\.)*  to correctly handle escaped closing brackets
+# (\]) that are valid Markdown syntax.  Images (preceded by !) are excluded via
+# the negative lookbehind (?<!!).
+$mdLinkRx   = [regex]'(?<!!)\[(?:[^\]\\]|\\.)*\]\((/[^)]*)\)'
+
+# Strips the fragment identifier from a URL path.
+# -split '#', 2  splits on the FIRST '#' only, so paths such as
+# '/page#section#note' return '/page' and the full fragment 'section#note'
+# is preserved when rebuilding the replacement href.
+function Get-PathWithoutFragment ([string]$Href) {
+    return ($Href -split '#', 2)[0]
+}
 
 function Find-ClosestHref ([string]$Broken) {
     $lastSeg = ($Broken.TrimEnd('/') -split '/')[-1]
@@ -112,7 +121,7 @@ function Find-ClosestHref ([string]$Broken) {
     return $null
 }
 
-# Returns the fixed href for a broken path, preserving any fragment (#section).
+# Returns the fixed href for a broken path, preserving any fragment identifier.
 function Resolve-FixedHref ([string]$BrokenPath, [string]$OriginalHref) {
     $closest = Find-ClosestHref $BrokenPath
     if ($null -eq $closest) { return $null }
@@ -152,7 +161,7 @@ foreach ($mdFile in $mdFiles) {
         foreach ($m in $htmlHrefRx.Matches($line)) {
             $href = $m.Groups[1].Value
             if (-not $href.StartsWith('/')) { continue }
-            $hrefPath = ($href -split '#', 2)[0]
+            $hrefPath = Get-PathWithoutFragment $href
             if ($validHrefs.Contains($hrefPath)) { continue }
             $null = $allMatches.Add([PSCustomObject]@{
                 Match    = $m
@@ -166,7 +175,7 @@ foreach ($mdFile in $mdFiles) {
         # ── Markdown links ────────────────────────────────────────────────────
         foreach ($m in $mdLinkRx.Matches($line)) {
             $href     = $m.Groups[1].Value
-            $hrefPath = ($href -split '#', 2)[0]
+            $hrefPath = Get-PathWithoutFragment $href
             if ($validHrefs.Contains($hrefPath)) { continue }
             $null = $allMatches.Add([PSCustomObject]@{
                 Match    = $m

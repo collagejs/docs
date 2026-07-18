@@ -13,3 +13,32 @@ pre {
         border-radius: var(--cjs-radius);
     }
 }
+
+.widget {
+    background: var(--widget-bg);
+    color: var(--widget-fg);
+
+    &.widget-rounded {
+        border-radius: var(--cjs-radius);
+    }
+
+    &.widget-top-rounded {
+        border-top-left-radius: var(--cjs-radius);
+        border-top-right-radius: var(--cjs-radius);
+    }
+
+    &.widget-bottom-rounded {
+        border-bottom-left-radius: var(--cjs-radius);
+        border-bottom-right-radius: var(--cjs-radius);
+    }
+}
+
+hr {
+    color: var(--cjs-primary-400);
+}
+
+.active {
+    font-weight: bold;
+    text-decoration: underline;
+    color: var(--cjs-primary-400);
+}

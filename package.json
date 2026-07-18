@@ -21,7 +21,9 @@
 		"@sveltejs/adapter-cloudflare": "^7.2.9",
 		"@sveltejs/kit": "^2.63.0",
 		"@sveltejs/vite-plugin-svelte": "^7.1.2",
+		"@types/node": "^26.1.1",
 		"@vitest/browser-playwright": "^4.1.8",
+		"mdsvex": "^0.12.7",
 		"playwright": "^1.60.0",
 		"prettier": "^3.8.3",
 		"prettier-plugin-svelte": "^4.1.0",
@@ -34,7 +36,7 @@
 		"wrangler": "^4.27.0"
 	},
 	"dependencies": {
-		"@collagejs/core": "0.x || 1.x",
+		"@collagejs/core": "^0.10.1",
 		"@lucide/svelte": "^1.24.0",
 		"bootstrap": "^5.3.8",
 		"sass": "^1.101.0"

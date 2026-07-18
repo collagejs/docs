@@ -33,7 +33,7 @@
         <ul class="list">
             <li><FileBracesCorner size="1em" color="var(--cjs-primary-200)" />&nbsp;Dev/build import maps</li>
             <li>
-                <FileBracesCorner size="1em" color="var(--cjs-primary-200)" />&nbsp;Dev/build Automatic externalization
+                <FileBracesCorner size="1em" color="var(--cjs-primary-200)" />&nbsp;Dev/build automatic externalization
             </li>
             <li><FileBracesCorner size="1em" color="var(--cjs-primary-200)" />&nbsp;Dev tool for overrides</li>
         </ul>
@@ -41,6 +41,7 @@
     <Card class="col col-md">
         <span class="card-title"><FastForward />&nbsp;Test-drive in minutes</span>
         <pre class="code-block">npx degit https://github.com/collagejs/root-template.git</pre>
+        <p>Or <a href="https://github.com/new?template_name=root-template&template_owner=collagejs" target="_blank">Clone template on GitHub</a></p>
     </Card>
 </div>
 

@@ -139,46 +139,59 @@ foreach ($mdFile in $mdFiles) {
         $line    = $lines[$i]
         $newLine = $line
 
+        # Collect all broken link matches from both patterns and process them in
+        # descending index order.  Descending order ensures that substituting a
+        # match at a higher position does not shift the indices of matches at
+        # lower positions, so each replacement is made at the correct offset.
+        $allMatches = [System.Collections.Generic.List[object]]::new()
+
         # ── HTML anchors ──────────────────────────────────────────────────────
+        # Only root-relative paths (starting with '/') are validated.
+        # External URLs (http/https) and fragment-only refs (#anchor) do not
+        # start with '/' and are therefore naturally excluded.
         foreach ($m in $htmlHrefRx.Matches($line)) {
             $href = $m.Groups[1].Value
-            if (-not $href.StartsWith('/')) { continue }           # skip links not starting with '/'
-            $hrefPath = ($href -split '#', 2)[0]                   # strip fragment
-            if ($validHrefs.Contains($hrefPath)) { continue }      # link is valid
-
-            $rel = $mdFile.FullName.Replace($RootDir, '').TrimStart([System.IO.Path]::DirectorySeparatorChar, '/')
-            Write-Host "ERROR  ${rel}:${lineNum}" -ForegroundColor Red
-            Write-Host "       HTML anchor href='$href' not found in any sidebar." -ForegroundColor Red
-            $totalErrors++
-
-            if ($shouldFix) {
-                $replacement = Resolve-FixedHref $hrefPath $href
-                if ($null -ne $replacement) {
-                    $newLine = $newLine.Replace($href, $replacement)
-                    $fileChanged = $true
-                    Write-Host "  AUTO-FIX: '$href' → '$replacement'" -ForegroundColor Yellow
-                    $fixedCount++
-                }
-            }
+            if (-not $href.StartsWith('/')) { continue }
+            $hrefPath = ($href -split '#', 2)[0]
+            if ($validHrefs.Contains($hrefPath)) { continue }
+            $null = $allMatches.Add([PSCustomObject]@{
+                Match    = $m
+                Group    = $m.Groups[1]
+                Href     = $href
+                HrefPath = $hrefPath
+                Kind     = 'HTML anchor'
+            })
         }
 
         # ── Markdown links ────────────────────────────────────────────────────
         foreach ($m in $mdLinkRx.Matches($line)) {
             $href     = $m.Groups[1].Value
-            $hrefPath = ($href -split '#', 2)[0]                   # strip fragment
-            if ($validHrefs.Contains($hrefPath)) { continue }      # link is valid
+            $hrefPath = ($href -split '#', 2)[0]
+            if ($validHrefs.Contains($hrefPath)) { continue }
+            $null = $allMatches.Add([PSCustomObject]@{
+                Match    = $m
+                Group    = $m.Groups[1]
+                Href     = $href
+                HrefPath = $hrefPath
+                Kind     = 'Markdown link'
+            })
+        }
 
-            $rel = $mdFile.FullName.Replace($RootDir, '').TrimStart([System.IO.Path]::DirectorySeparatorChar, '/')
+        # ── Report errors and apply fixes in descending index order ──────────
+        $rel = $mdFile.FullName.Replace($RootDir, '').TrimStart([System.IO.Path]::DirectorySeparatorChar, '/')
+        foreach ($entry in ($allMatches | Sort-Object { $_.Group.Index } -Descending)) {
             Write-Host "ERROR  ${rel}:${lineNum}" -ForegroundColor Red
-            Write-Host "       Markdown link href='$href' not found in any sidebar." -ForegroundColor Red
+            Write-Host "       $($entry.Kind) href='$($entry.Href)' not found in any sidebar." -ForegroundColor Red
             $totalErrors++
 
             if ($shouldFix) {
-                $replacement = Resolve-FixedHref $hrefPath $href
+                $replacement = Resolve-FixedHref $entry.HrefPath $entry.Href
                 if ($null -ne $replacement) {
-                    $newLine = $newLine.Replace($href, $replacement)
+                    # Replace exactly this occurrence using the capture-group position.
+                    $g       = $entry.Group
+                    $newLine = $newLine.Substring(0, $g.Index) + $replacement + $newLine.Substring($g.Index + $g.Length)
                     $fileChanged = $true
-                    Write-Host "  AUTO-FIX: '$href' → '$replacement'" -ForegroundColor Yellow
+                    Write-Host "  AUTO-FIX: '$($entry.Href)' → '$replacement'" -ForegroundColor Yellow
                     $fixedCount++
                 }
             }

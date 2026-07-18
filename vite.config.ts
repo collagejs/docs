@@ -14,9 +14,6 @@ export default defineConfig({
 				runes: ({ filename }) => {
 					const parts = filename.split(/[/\\]/);
 					const fileName = parts[parts.length - 1];
-					if (fileName.endsWith('.md')) {
-						console.debug('runes mode for %s: %o', filename, parts);
-					}
 					return parts.includes('node_modules') ||
 						fileName.endsWith('.md') ? undefined : true;
 				}

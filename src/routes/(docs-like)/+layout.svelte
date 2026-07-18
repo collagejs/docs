@@ -28,9 +28,6 @@
         };
         return extract(primarySidebarCtx.value);
     });
-    $inspect(flattenedArticleDefinitions).with((t, v) => {
-        console.log('flattenedArticleDefinitions (%s): %o', t, v);
-    });
     const currentArticleDefinitionIndex = $derived(
         flattenedArticleDefinitions.findIndex((ad) => page.url.pathname === ad.href)
     );

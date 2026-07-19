@@ -8,6 +8,7 @@
     import { PrimarySidebarContext, setPrimarySidebar } from './PrimarySidebar/context.svelte.js';
     import TopNav from './TopNav.svelte';
     import { isArticleGroupDefinition } from './utils.js';
+    import { ScrollDocContext, setScrollDoc } from '$lib/scrollDocContext.svelte.js';
 
     let { data, children }: LayoutProps = $props();
 
@@ -32,6 +33,10 @@
     );
     const nextArticleDefinition = $derived(flattenedArticleDefinitions[currentArticleDefinitionIndex + 1]);
     const previousArticleDefinition = $derived(flattenedArticleDefinitions[currentArticleDefinitionIndex - 1]);
+
+    if (import.meta.env.DEV) {
+        setScrollDoc(new ScrollDocContext());
+    }
 </script>
 
 <div class="contents d-flex flex-column gap-3 h-100">

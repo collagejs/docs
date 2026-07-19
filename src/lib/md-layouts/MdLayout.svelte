@@ -17,6 +17,7 @@
     import '../../scss/code.css';
     import '../../scss/md-content.css';
     import H1 from './headers/H1.svelte';
+    import { scrollDoc, ScrollDocContext } from '$lib/scrollDocContext.svelte.js';
 
     type Props = {
         title: string;
@@ -32,9 +33,19 @@
         children
     }: Props = $props();
 
+    let scrollDocCtx: ScrollDocContext | undefined;
+    try {
+        scrollDocCtx = scrollDoc();
+    }
+    catch { }
+
     let topEl: HTMLElement | null = null;
+    let scroll = $derived(scrollDocCtx?.value ?? true);
 
     $effect(() => {
+        if (!scroll) {
+            return;
+        }
         topEl?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 </script>

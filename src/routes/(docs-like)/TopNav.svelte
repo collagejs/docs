@@ -5,11 +5,20 @@
     import { page } from '$app/state';
     import { MediaQuery } from 'svelte/reactivity';
     import { browser } from '$app/env';
+    import { Scroll } from '@lucide/svelte';
+    import { scrollDoc, ScrollDocContext } from '$lib/scrollDocContext.svelte.js';
 
     const pal = palette();
     let showCollapsible = $state(false);
     const collapseMq = new MediaQuery('(min-width: 768px)');
     const finalShowCollapsible = $derived(browser ? collapseMq.current || showCollapsible : true);
+    let scrollDocCtx: ScrollDocContext | undefined;
+    if (import.meta.env.DEV) {
+        try {
+            scrollDocCtx = scrollDoc();
+        }
+        catch { }
+    }
 
     function isActive(path: string) {
         return page.route.id?.startsWith(`/(docs-like)${path}`) ?? false;
@@ -50,8 +59,17 @@
             ]}
             style={`display: ${finalShowCollapsible ? 'flex' : 'none'} !important;`}
         >
-            <div>
+            <div class="d-flex gap-1">
                 <PaletteToggler bind:name={pal.value} />
+                {#if import.meta.env.DEV}
+                    <button
+                        type="button"
+                        class="cjs-btn cjs-btn-neutral cjs-btn-sm"
+                        onclick={() => scrollDocCtx!.value = !scrollDocCtx?.value}
+                    >
+                        <Scroll />
+                    </button>
+                {/if}
             </div>
             <ul class="items d-flex flex-row gap-3">
                 <li><a href="/docs" class:active={isActive('/docs')}>Docs</a></li>

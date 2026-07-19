@@ -18,7 +18,6 @@
             const result: ArticleDefinition[] = [];
             for (let ad of ads) {
                 if (isArticleGroupDefinition(ad)) {
-                    console.debug('extracting articles from group: %o', ad.title);
                     result.push(...extract(ad.articles));
                     continue;
                 }

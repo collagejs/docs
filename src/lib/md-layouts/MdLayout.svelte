@@ -9,6 +9,7 @@
     export { default as li } from './Li.svelte';
     export { default as ol } from './Ol.svelte';
     export { default as blockquote } from './Blockquote.svelte';
+    export { default as a } from './A.svelte';
 </script>
 
 <script lang="ts">

@@ -13,9 +13,11 @@
     const isActive = $derived(page.url.pathname.endsWith(articleDefinition.href));
 </script>
 
-<li class={['my-2', isActive && 'active', cssClass]} {...restProps}>
+<li class={['my-2 d-flex gap-2 align-items-center', isActive && 'active', cssClass]} {...restProps}>
     <a href={articleDefinition.href}>{articleDefinition.title}</a>
     {#if isActive}
-        <ArrowBigLeftDash fill="currentColor" />
+        <span class="flex-grow-1 flex-shrink-1">
+            <ArrowBigLeftDash fill="currentColor" />
+        </span>
     {/if}
 </li>

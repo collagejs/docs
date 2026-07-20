@@ -5,11 +5,13 @@ import type { ArticleDefinition } from "../../../types.js";
     type Props = {
         prev: ArticleDefinition | undefined;
         next: ArticleDefinition | undefined;
+        start: boolean;
     };
 
     let {
         prev,
-        next
+        next,
+        start
     }: Props = $props();
 </script>
 
@@ -26,7 +28,7 @@ import type { ArticleDefinition } from "../../../types.js";
     <a class={["cjs-btn cjs-btn-primary cjs-btn-outline", 'flex-grow-1', !next && 'invisible']} href={next?.href ?? "#"}>
         <div class="d-flex flex-column align-items-end w-100 text-end">
             <FastForward />
-            <span class="cjs-text-muted">Next</span>
+            <span class="cjs-text-muted">{start? 'Start' : 'Next'}</span>
             {#if next}
                 <span>{next.title}</span>
             {/if}

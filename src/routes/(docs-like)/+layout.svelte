@@ -52,7 +52,11 @@
                 <div class={['col-12 order-1 order-md-2', primarySidebarCtx.value?.length > 0 && 'col-md-9']}>
                     {@render children()}
                     {#if nextArticleDefinition || previousArticleDefinition}
-                        <NavArticleButtons prev={previousArticleDefinition} next={nextArticleDefinition} />
+                        <NavArticleButtons
+                            prev={previousArticleDefinition}
+                            next={nextArticleDefinition}
+                            start={currentArticleDefinitionIndex === -1}
+                        />
                     {/if}
                 </div>
             </div>

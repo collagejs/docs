@@ -5,13 +5,11 @@
 ---
 
 <script lang="ts">
-  import collagejsLogo from '@collagejs/core/logo/512';
   import SingleSpaIcon from '$lib/SingleSpaIcon.svelte';
+  import IntroLogo from '../IntroLogo.svelte';
 </script>
 
-<div class="d-flex justify-content-center">
-  <img src={collagejsLogo} width="128" height="128" alt="CollageJS" />
-</div>
+<IntroLogo />
 
 Welcome!  This is where you can find the complete documentation for all that *CollageJS* has to offer, from its concept and main objective, to its support for front-end frameworks and ecosystems.
 

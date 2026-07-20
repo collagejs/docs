@@ -5,6 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
+		"prebuild": "npm run check:links && npm run check",
 		"build": "vite build",
 		"preview": "vite preview",
 		"cf:dev": "wrangler dev .svelte-kit/cloudflare/_worker.js",
@@ -12,6 +13,7 @@
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"check:links": "pwsh scripts/check-links.ps1",
 		"lint": "prettier --check .",
 		"format": "prettier --write .",
 		"test:unit": "vitest",

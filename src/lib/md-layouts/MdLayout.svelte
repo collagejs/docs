@@ -10,6 +10,7 @@
     export { default as ol } from './Ol.svelte';
     export { default as blockquote } from './Blockquote.svelte';
     export { default as a } from './A.svelte';
+    export { default as table } from './table/Table.svelte';
 </script>
 
 <script lang="ts">

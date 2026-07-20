@@ -1,4 +1,5 @@
 <script lang="ts">
+    import SingleSpaIcon from '$lib/SingleSpaIcon.svelte';
     import Card from '../Card/Card.svelte';
 </script>
 
@@ -9,7 +10,9 @@
     <div class="row">
         <Card class="col-auto d-flex gap-2">
             <a href="/docs" class="cjs-btn cjs-btn-primary">Get Started</a>
-            <a href="/guides/migration-from-single-spa" class="cjs-btn cjs-btn-secondary">Migration Guide for <code>single-spa</code></a>
+            <a href="/guides/migration-from-single-spa" class="cjs-btn cjs-btn-secondary">
+                <SingleSpaIcon />Migration Guide for the <code>single-spa</code> savvy
+            </a>
         </Card>
     </div>
 </div>

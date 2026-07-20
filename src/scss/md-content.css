@@ -1,8 +1,15 @@
 .md-content {
-    h1, h2, h3, h4, h5, h6 {
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
         margin-top: 2rem;
         margin-bottom: 1.5rem;
     }
+
     p {
         margin-top: 1.3rem;
         margin-bottom: 1.3rem;
@@ -10,10 +17,11 @@
     }
 
     blockquote {
-        & > p:first-child {
+        &>*:first-child {
             margin-top: 0;
         }
-        & > p:last-child {
+
+        &>*:last-child {
             margin-bottom: 0;
         }
     }
@@ -21,5 +29,51 @@
     ul {
         list-style: none;
         padding-left: 1em;
+    }
+
+    details {
+        padding: 0.5rem 1rem;
+
+        &[open] {
+            border: 1px solid var(--cjs-primary);
+            border-radius: var(--cjs-radius)
+        }
+
+        &>summary {
+            font-weight: bold;
+            margin-bottom: 0.75rem;
+        }
+
+        &>*:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    table {
+        border: 1px solid var(--cjs-primary);
+
+        & thead {
+            background: var(--cjs-primary-gradient);
+
+            & tr>th {
+                font-weight: bold;
+                text-align: center;
+            }
+        }
+
+        & tbody {
+            tr:nth-child(even) {
+                background-color: rgba(var(--cjs-white-rgb), 0.05);
+            }
+
+            tr:hover {
+                background-color: rgba(var(--cjs-white-rgb), 0.15);
+            }
+        }
+
+        & tr>th,
+        & tr>td {
+            padding: 0.5rem 1rem;
+        }
     }
 }

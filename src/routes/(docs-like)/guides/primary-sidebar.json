@@ -1,1 +1,10 @@
-[]
+[
+    {
+        "title": "Migration From Single-SPA",
+        "href": "/guides/migration-from-single-spa"
+    },
+    {
+        "title": "Development Guide for Adapters",
+        "href": "/guides/development-guide-for-adapters"
+    }
+]

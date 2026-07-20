@@ -8,6 +8,7 @@
     import { PrimarySidebarContext, setPrimarySidebar } from './PrimarySidebar/context.svelte.js';
     import TopNav from './TopNav.svelte';
     import { isArticleGroupDefinition } from './utils.js';
+    import { ScrollDocContext, setScrollDoc } from '$lib/scrollDocContext.svelte.js';
 
     let { data, children }: LayoutProps = $props();
 
@@ -18,7 +19,6 @@
             const result: ArticleDefinition[] = [];
             for (let ad of ads) {
                 if (isArticleGroupDefinition(ad)) {
-                    console.debug('extracting articles from group: %o', ad.title);
                     result.push(...extract(ad.articles));
                     continue;
                 }
@@ -28,14 +28,15 @@
         };
         return extract(primarySidebarCtx.value);
     });
-    $inspect(flattenedArticleDefinitions).with((t, v) => {
-        console.log('flattenedArticleDefinitions (%s): %o', t, v);
-    });
     const currentArticleDefinitionIndex = $derived(
         flattenedArticleDefinitions.findIndex((ad) => page.url.pathname === ad.href)
     );
     const nextArticleDefinition = $derived(flattenedArticleDefinitions[currentArticleDefinitionIndex + 1]);
     const previousArticleDefinition = $derived(flattenedArticleDefinitions[currentArticleDefinitionIndex - 1]);
+
+    if (import.meta.env.DEV) {
+        setScrollDoc(new ScrollDocContext());
+    }
 </script>
 
 <div class="contents d-flex flex-column gap-3 h-100">

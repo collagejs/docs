@@ -39,6 +39,10 @@ hr {
 
 .active {
     font-weight: bold;
-    text-decoration: underline;
     color: var(--cjs-primary-400);
+
+    & a {
+        color: var(--cjs-primary-400);
+        text-decoration: underline;
+    }
 }

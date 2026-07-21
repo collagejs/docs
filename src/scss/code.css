@@ -2,10 +2,10 @@ pre[class*='language-'] {
 	color: rgba(var(--cjs-white-rgb), 0.9);
 	background: rgba(var(--cjs-black-rgb), 0.3);
 	text-shadow: none;
-	font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+	font-family: var(--cjs-font-mono);
 	font-size: 1em;
 	line-height: 1.5;
-	letter-spacing: .2px;
+	letter-spacing: .4px;
 	white-space: pre;
 	word-spacing: normal;
 	word-break: normal;

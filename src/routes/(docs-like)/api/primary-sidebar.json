@@ -1,1 +1,43 @@
-[]
+[
+    {
+        "title": "Packages",
+        "articles": [
+            {
+                "title": "@collagejs/core",
+                "href": "/api/packages/core"
+            },
+            {
+                "title": "@collagejs/imo",
+                "href": "/api/packages/imo"
+            },
+            {
+                "title": "@collagejs/vite-aim",
+                "href": "/api/packages/vite-aim"
+            },
+            {
+                "title": "@collagejs/vite-css",
+                "href": "/api/packages/vite-css"
+            },
+            {
+                "title": "@collagejs/vite-im",
+                "href": "/api/packages/vite-im"
+            },
+            {
+                "title": "@collagejs/importmap",
+                "href": "/api/packages/importmap"
+            },
+            {
+                "title": "@collagejs/adapter",
+                "href": "/api/packages/adapter"
+            },
+            {
+                "title": "@collagejs/svelte",
+                "href": "/api/packages/svelte"
+            },
+            {
+                "title": "@collagejs/react",
+                "href": "/api/packages/react"
+            }
+        ]
+    }
+]

@@ -254,8 +254,30 @@ function noopPiece<
 >(): CorePiece<TProps, TCap>;
 ```
 
+### preventRemount
+
+Generates a mount lifecycle function that can only be called once.  If it is called more than once, then an error is thrown.
+
+- Use it freely on core piece object creation whenever remounting should be strictly disallowed.
+- Official framework adapters automatically add it if `capabilities.remountable` is explicitly set to `false`.
+- The most logical place for the generated function is at the beginning of the array of mount functions.
+
+#### Signature
+
+```typescript
+function preventRemount<
+  TProps extends Record<string, any> = Record<string, any>
+>(): MountFn<TProps>;
+```
+
+#### Return Value
+
+A function that satisfies the signature for mount lifecycle functions that prevents core piece remounting.
+
 ## Constants & Objects
 
 ### mountPieceKey
 
 Constant value of type `symbol` used to deliver the children-aware `mountPiece` function to the core piece object using the piece's initial properties POJO.
+
+Official framework adapters usually extract this `mountPiece` function from the properties POJO and make it available through the framework's contextual data system.

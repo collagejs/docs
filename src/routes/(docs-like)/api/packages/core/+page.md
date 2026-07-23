@@ -35,8 +35,6 @@ Creates an iterator that iterates the stack from bottom to top.
 
 - It can be spread (`[...stack.bottomToTop()]`) or iterated with `for..of`.
 
-###### Signature
-
 ```typescript
 bottomToTop(): Iterator<T>;
 ```
@@ -49,8 +47,6 @@ An iterator object that iterates the stack from bottom to top.
 
 Empties the stack.
 
-###### Signature
-
 ```typescript
 clear(): void;
 ```
@@ -61,13 +57,9 @@ Removes the first element that matches the provided predicate function.
 
 - The algorithm traverses the stack from top to bottom.
 
-###### Signature
-
 ```typescript
 delete(predicate: (item: T) => boolean): boolean;
 ```
-
-###### Parameters
 
 | Parameter | Description |
 | - | - |
@@ -84,13 +76,9 @@ Creates a new stack object pre-filled with the items in the provided array.
 - The array is interpreted as bottom-to-top.
 - Accepts empty arrays.
 
-###### Signature
-
 ```typescript
 static fromArray<U>(items: U[]): Stack<U>;
 ```
-
-###### Parameters
 
 | Parameter | Description |
 | - | - |
@@ -104,8 +92,6 @@ A new `Stack` object containing the provided items.
 
 Checks is the stack is empty.
 
-###### Signature
-
 ```typescript
 isEmpty(): boolean;
 ```
@@ -117,8 +103,6 @@ isEmpty(): boolean;
 ##### peek
 
 Returns the item at the top of the stack without removing it.
-
-###### Signature
 
 ```typescript
 peek(): T | undefined;
@@ -132,8 +116,6 @@ The item at the top of the stack, or `undefined` if the stack was empty.
 
 Removes the item at the top of the stack.
 
-###### Signature
-
 ```typescript
 pop(): T | undefined;
 ```
@@ -146,13 +128,9 @@ The item that was at the top of the stack, or `undefined` it the stack was empty
 
 Pushes a new item at the top of the stack.
 
-###### Signature
-
 ```typescript
 push(item: T): number;
 ```
-
-###### Parameters
 
 | Parameter | Description |
 | - | - |
@@ -166,13 +144,11 @@ The new stack's size.
 
 Creates a shallow copy of the stack as an array, in stack order (bottom first).
 
-###### Signature
-
 ```typescript
 toArray(): T[];
 ```
 
-Return Value
+###### Return Value
 
 The desired new array.
 
@@ -180,9 +156,17 @@ The desired new array.
 
 Alias for [peek](#peek).
 
+```typescript
+top(): T | undefined;
+```
+
 ##### toString
 
 Creates a string representation of the stack using the string representation of the contained items.
+
+```typescript
+toString(): string;
+```
 
 ###### Return Value
 
@@ -196,12 +180,9 @@ Ensures the global object `CollageJs` exists in the JavaScript environment.  Thi
 
 - Any code that wishes to install something inside this object must first call this function.
 
-#### Signature
-
 ```typescript
 function ensureGlobalCollageJs(): void;
 ```
-
 
 ### mountPiece
 
@@ -209,8 +190,6 @@ Mounts the provided `CorePiece` object inside the provided `target`.  The functi
 
 - Once the returned promise resolves, the core piece is mounted and visible (if applicable) inside the provided target.
 - The mounting process will have given the children-aware `mountPiece` function to the core piece's `mount` lifecycle function via the initial properties object, under the symbol `mountPieceKey`.
-
-#### Signature
 
 ```typescript
 function mountPiece<
@@ -222,7 +201,6 @@ function mountPiece<
     props?: TProps,
 ): Promise<MountedPiece<TProps, TCap>>;
 ```
-#### Parameters
 
 | Parameter | Description |
 | - | - |
@@ -245,8 +223,6 @@ Returns an object that minimally satisfies the `CorePiece` type.
 - The returned object is **the same object on every call**.  In other words, the returned value is a singleton.
 - Used to obtain a test or placeholder core piece that is appropriately typed.
 
-#### Signature
-
 ```typescript
 function noopPiece<
   TProps extends Record<string, any> = Record<string, any>,
@@ -261,8 +237,6 @@ Generates a mount lifecycle function that can only be called once.  If it is cal
 - Use it freely on core piece object creation whenever remounting should be strictly disallowed.
 - Official framework adapters automatically add it if `capabilities.remountable` is explicitly set to `false`.
 - The most logical place for the generated function is at the beginning of the array of mount functions.
-
-#### Signature
 
 ```typescript
 function preventRemount<

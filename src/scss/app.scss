@@ -40,9 +40,14 @@ hr {
 .active {
     font-weight: bold;
     color: var(--cjs-primary-400);
-
+    
     & a {
         color: var(--cjs-primary-400);
         text-decoration: underline;
     }
+}
+
+a.active {
+    color: var(--cjs-primary-400);
+    text-decoration: underline;
 }

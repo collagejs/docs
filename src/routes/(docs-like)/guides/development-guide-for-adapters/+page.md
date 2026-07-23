@@ -14,10 +14,6 @@ The term *framework adapter* is used to refer to a library that provides develop
 - Create CollageJS `CorePiece` objects out of a user interface component
 - Mount CollageJS `CorePiece` components, usually imported from outside the current project
 
-> **<Flag /> `@collagejs/sigle-spa` is an Exception**
->
-> The NPM package `@collagejs/single-spa` is a compatibility adapter to assist in the migration from *single-spa*.  It creates *single-spa* parcels out of *CollageJS* pieces.
-
 Official framework adapters attempt to expose a unified API so the learning curve is not increased by increasing the number of framework adapters.  The ideal scenario is for all adapters to expose, as much as possible, an identical API.  This way, developers need only to learn how to use one adapter, and this will carry over to every other adapter.
 
 We know for a fact that this is not 100% possible.  We like having the ability to configure Svelte's `mount` function call, or React's `createRoot` function call.  This is one place where we cannot provide the exact same interface.

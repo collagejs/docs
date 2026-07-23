@@ -10,7 +10,14 @@
     export { default as ol } from './Ol.svelte';
     export { default as blockquote } from './Blockquote.svelte';
     export { default as a } from './A.svelte';
-    export { default as table } from './table/Table.svelte';
+    export {
+        table,
+        thead,
+        tbody,
+        tr,
+        th,
+        td
+    } from 'mdsvex-table';
 </script>
 
 <script lang="ts">
@@ -19,6 +26,7 @@
     import '../../scss/md-content.css';
     import H1 from './headers/H1.svelte';
     import { scrollDoc, ScrollDocContext } from '$lib/scrollDocContext.svelte.js';
+    import { TableContext, setTableContext } from 'mdsvex-table';
 
     type Props = {
         title: string;
@@ -49,6 +57,8 @@
         }
         topEl?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
+
+    setTableContext(new TableContext());
 </script>
 
 <svelte:head>

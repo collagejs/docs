@@ -41,6 +41,7 @@
 		"@collagejs/core": "^0.10.2",
 		"@lucide/svelte": "^1.24.0",
 		"bootstrap": "^5.3.8",
+		"mdsvex-table": "^0.0.1",
 		"sass": "^1.101.0"
 	}
 }

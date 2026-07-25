@@ -4,6 +4,7 @@ import { playwright } from '@vitest/browser-playwright';
 import adapter from '@sveltejs/adapter-cloudflare';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { mdsvex } from 'mdsvex';
+import rehypeSlug from 'rehype-slug';
 
 export default defineConfig({
 	plugins: [
@@ -21,6 +22,9 @@ export default defineConfig({
 			adapter: adapter(),
 			preprocess: mdsvex({
 				extensions: ['.md'],
+				rehypePlugins: [
+					rehypeSlug,
+				],
 				smartypants: true,
 				layout: join(__dirname, './src/lib/md-layouts/MdLayout.svelte'),
 			}),

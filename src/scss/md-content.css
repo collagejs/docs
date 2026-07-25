@@ -76,9 +76,9 @@
         }
     }
 
-    .mdsvex-table {
+    [data-mdsvex-table='table'] {
         & [data-mdsvex-table='tr'] {
-            padding: 1em 0;
+            padding: 1em 0.5em;
 
             &:nth-child(even) {
                 background-color: rgba(var(--cjs-white-rgb), 0.05);

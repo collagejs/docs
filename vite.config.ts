@@ -5,6 +5,23 @@ import adapter from '@sveltejs/adapter-cloudflare';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { mdsvex } from 'mdsvex';
 import rehypeSlug from 'rehype-slug';
+import type { Literal, Node } from 'unist';
+import visit from 'unist-util-visit';
+import type { Transformer } from 'unified';
+
+function unescapePipesInTables(): Transformer {
+    return (tree) => {
+        function replace(node: Node) {
+			visit(node, (child: any) => {
+				if (child.value && !child.children) {
+					child.value = child.value.replace(/\\\|/g, '|');
+				}
+            });
+		}
+		visit(tree, 'tableCell', replace);
+    };
+}
+
 
 export default defineConfig({
 	plugins: [
@@ -22,8 +39,13 @@ export default defineConfig({
 			adapter: adapter(),
 			preprocess: mdsvex({
 				extensions: ['.md'],
+				remarkPlugins: [
+					unescapePipesInTables
+				],
 				rehypePlugins: [
+					// @ts-expect-error TS2322 mdsvex urgently needs to update packages
 					rehypeSlug,
+					unescapePipesInTables,
 				],
 				smartypants: true,
 				layout: join(__dirname, './src/lib/md-layouts/MdLayout.svelte'),

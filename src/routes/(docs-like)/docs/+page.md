@@ -17,7 +17,7 @@ We recommend that you move through the topics in order since the documentation h
 
 ## Single-SPA Developers
 
-If you are versed in in `single-spa`, maybe you should give the migration guide a try.  *CollageJS* was born from the concept of *single-spa parcels* and you'll find much of *CollageJS* familiar.
+If you are versed in `single-spa`, maybe you should give the migration guide a try.  *CollageJS* was born from the concept of *single-spa parcels* and you'll find much of *CollageJS* familiar.
 
 <a class="cjs-btn cjs-btn-primary" href="/guides/migration-from-single-spa">
   <SingleSpaIcon />Migrate from <code>single-spa</code>

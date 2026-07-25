@@ -158,7 +158,7 @@ We are done.  This plug-in provides the same capabilities of `vite-plugin-single
 | Import map injection | <Check size="1em"/> | <Check size="1em"/> |
 | Import map overriding | <Check size="1em"/> through `import-map-overrides` | <Check size="1em"/> through `@collagejs/imo` |
 | Automatic externalization of everything in the import map | <CircleSlash size="1em"/> | <Check size="1em"/> on build<br /> <Check size="1em"/> on serve |
-| Import modes for externalized module specifies | <CircleSlash size="1em"/> Static import statement<br /><Check size="1em"/> Dynamic `import()` | <Check size="1em"/> Static import statement<br /><Check size="1em"/> Dynamic `import()` |
+| Import modes for externalized module specifiers | <CircleSlash size="1em"/> Static import statement<br /><Check size="1em"/> Dynamic `import()` | <Check size="1em"/> Static import statement<br /><Check size="1em"/> Dynamic `import()` |
 
 > **<Info /> @collagejs/imo**
 >
@@ -248,7 +248,7 @@ Once the AIM plug-in has this import map, it uses it to resolve import statement
 
 ### Module Externalization in Core Piece Projects
 
-It can be done the traditional way, setting up the list of module specifies in Vite's `build.rolldownOptions.external` option, or we can go the import map way provided by `@collagejs/vite-aim`.  The latter would look similar to this:
+It can be done the traditional way, setting up the list of module specifiers in Vite's `build.rolldownOptions.external` option, or we can go the import map way provided by `@collagejs/vite-aim`.  The latter would look similar to this:
 
 ```typescript
 import { cjsCssPlugin } from '@collagejs/vite-css';

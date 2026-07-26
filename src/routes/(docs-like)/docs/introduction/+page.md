@@ -38,7 +38,7 @@ Of all the interface properties, only the `mount` lifecycle function is required
 
 ### Mount
 
-Assuming that each letter below is a function, the following objects are valid `CorePiece` objects:
+Assuming that each letter below is a function that satisfies the `MountFn` type, the following objects are valid `CorePiece` objects:
 
 ```typescript
 const myPiece = {
@@ -58,7 +58,7 @@ On the other hand, `myPieceComplex` is an example of how mounting functions can 
 
 #### Unmounting
 
-Core pieces must provide an unmounting function.  The mechanism is very simple:  A mounting function must return the unmounting function.
+Core pieces should provide an unmounting function.  The mechanism is very simple:  A mounting function returns the unmounting function that undoes what mounting does.
 
 To exemplify, let's elaborate on the `myPiece` piece from above:
 
@@ -81,7 +81,7 @@ This kind of pattern is very popular among font-end libraries and frameworks, so
 
 This is mostly an optimization technique and piece objects will work just fine without this lifecycle function.
 
-In order to fully understand this lifecycle function, we need to understand with more depth how *CollageJS* pieces are mounted, and we haven't done this.  Therefore, let's just say this:  Piece objects that provide the `relocate` lifecycle function are capable of switching target elements without going through unmounting and remounting.
+In order to fully understand this lifecycle function, we need to understand in more depth how *CollageJS* pieces are mounted, and we haven't done this.  Therefore, let's just say this:  Piece objects that provide the `relocate` lifecycle function are capable of switching target elements without going through unmounting and remounting.
 
 Let's just stop here for now.
 TODO:  Add link to where the topic can be resumed.
@@ -148,12 +148,12 @@ The returned `mountedPiece` object is of type `MountedPiece` and provides an int
 
 - `unmount` unmounts the piece
 - `update` updates the piece with a new set of property values
-- `relocate` relocates the piece without triggering a mounting cycle
+- `relocate` relocates the piece without triggering a mounting cycle (if the piece supports it)
 - `capabilities` exposes the piece's `capabilities` property
 
 ### A Better Way to Consume Pieces
 
-We learned that we can use `mountPiece` and its return value to handle however we think is best any core piece object.  This is great as well as powerful, but it is cumbersome.  Yes, the no-framework font-end developers exist and are many.  If you are one of those, then you're probably all set and ready to start experimenting by yourself.
+We learned that we can use `mountPiece` and its return value to mount a core piece and then manage its lifecycle.  This is both great and powerful, but it is cumbersome.  Yes, the no-framework font-end developers exist and are many, and we *know* they are shaking their heads right now.  If you are one of those, then you're probably all set and ready to start experimenting by yourself.
 
 But if you're not one of those developers, you want a friendlier way to consume pieces.  We understand fully.  This is where *adapters* enter the equation.
 

@@ -53,7 +53,7 @@ Let's tabulate the differences.  Some of these are actual problems or bugs found
 | Can only mount parcels in light DOM. | Can mount core pieces in light DOM, open or closed shadow roots. |
 | Cannot detect CSS bundles (provides partial support in webpack). | Can inject all bundled CSS files, including cases where CSS is split. |
 | Core library global object; global object passed as property to parcels. | No global object. |
-| Parcel components in adapters reserve property names like `config`. | Pice components don't reserve any property names. |
+| Parcel components in adapters reserve property names like `config`. | Piece components don't reserve any property names. |
 | Relatively complex set of rules to determine target element for mounting. | No algorithm to determine target; target is provided explicitly. |
 | No control over the target component where parcels mount. | Almost full control over the target (or container element if the target is a shadow root). |
 | Not possible to relocate a parcel unless unmounted and remounted. | Opt-in ability to have the core piece's generated DOM trees moved to a new target without a mounting cycle. |
@@ -80,7 +80,7 @@ Where the ones in bold already exist.
 
 ---
 
-Great, so now we can speed things up a little, now that we know what is and isn't.
+Great, so now we can speed things up a little because we know what is and what isn't.
 
 ## Must-Have's
 

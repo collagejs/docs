@@ -27,6 +27,10 @@ There are countless ways to create one of these.  Once more:  *CollageJS* doesn'
 - Using *CollageJS*' root template
 - Creating a Vite project with `npm create vite`
 
+> **<Lightbulb /> There are more `create` commands!**
+>
+> For example, there is `npm create vue@latest` that creates a VueJS-powered application project that is Vite-powered.  Yes, `npm create vite@latest` can also create a VueJS-powered project.  They are just different but both should work OK as root projects.
+
 To know more about the root template alternative, read the [root template](/docs/the-root-template) topic.  From this point forward, we'll see about using `npm create vite`.
 
 The first step is to create a new Vite project with Vite's creation package, `vite-create`.  Use the template you like the best:
@@ -60,11 +64,11 @@ Deja vu:  The same things we said about root projects are applicable to piece pr
 
 There is no template alternative for piece projects, so let's proceed with a new Vite project:
 
-```
+```bash
 npm create vite@latest -- --template react-ts
 ```
 
-This time we created a TypeScript + React project.  This means that the piece or pieces we'll export (via factory functions) will be powered by the React library.
+This time we created a TypeScript React project.  This means that the piece or pieces we'll export (via factory functions) will be powered by the React library.
 
 Just like root projects:  We can go straight to creating factory functions if we don't mind doing the work of creating all lifecycle functions ourselves, but the introduction topic taught us this is already done in the React adapter:
 
@@ -72,7 +76,7 @@ Just like root projects:  We can go straight to creating factory functions if we
 npm install @collagejs/react
 ```
 
-Now we can use the `buildPiece` function, which greatly simplifies the process.
+Now we can use the `buildPiece` function from this adapter library, which greatly simplifies the process.
 
 ### Recommended File Arrangement
 
@@ -147,18 +151,16 @@ import { CssFactory } from '@collagejs/vite-css/ex';
 const css = new CssFactory(import.meta.url);
 
 export function myPieceFactory() {
-  const lc = buildPiece(Root);
-  const { mount } = css.instantiate();
+  const piece = buildPiece(Root);
+  const { mount, relocate } = css.instantiate();
 
   return {
-    ...lc,
-    mount: [mount, lc.mount],
-  }
+    ...piece,
+    mount: [mount, piece.mount],
+    relocate: [relocate, piece.relocate],
+  };
 }
 ```
-> **<Info /> We Simplified**
->
-> The example above only composes the `mount` lifecycle function, but `css.instantiate()` also provides a `relocate` function that should be composed with the core piece's own `relocate` function.
 
 Believe it or not, **we're done**.
 

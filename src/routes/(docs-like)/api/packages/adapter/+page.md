@@ -105,8 +105,8 @@ Initializes a new instance of the class.
 
 ```typescript
 constructor(
-  corePiece: CorePiece<TProps, TCap> | Promise<CorePiece<TProps, TCap>>,
-  mountPiece: MountPiece<TProps, TCap>,
+  corePiece: CorePiece<TProps, TMeta> | Promise<CorePiece<TProps, TMeta>>,
+  mountPiece: MountPiece<TProps, TMeta>,
   options?: CorePieceLcQueueOptions
 );
 ```
@@ -165,10 +165,10 @@ Transfers que internal promise chain to a new `CorePieceLcQueue` object, and eje
 - Used in specialty cases, most notably in reactive signals-powered frameworks.
 
 ```typescript
-transferTo(otherQueue: CorePieceLcQueue<TProps, TCap>): [
-  CorePiece<TProps, TCap> | Promise<CorePiece<TProps, TCap>>,
-  MountPiece<TProps, TCap>,
-  MountedPiece<TProps, TCap> | undefined
+transferTo(otherQueue: CorePieceLcQueue<TProps, TMeta>): [
+  CorePiece<TProps, TMeta> | Promise<CorePiece<TProps, TMeta>>,
+  MountPiece<TProps, TMeta>,
+  MountedPiece<TProps, TMeta> | undefined
 ];
 ```
 

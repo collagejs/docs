@@ -21,18 +21,18 @@ In JavaScript terms, it is an object that fulfills a contract.  Which contract? 
 This is its TypeScript definition:
 
 ```typescript
-export interface CorePiece<TProps, TCap> {
+export interface CorePiece<TProps, TMeta> {
   mount: MountFn<TProps> | MountFn<TProps>[];
   relocate?: RelocateFn | RelocateFn[];
   update?: UpdateFn<TProps> | UpdateFn<TProps>[];
-  capabilities?: TCap & { remountable?: boolean; };
+  meta?: TMeta & { remountable?: boolean; };
 }
 ```
 > **<Flag /> NOTE**
 > 
 > This is a simplification of the actual types.
 
-Except for the `capabilities` property, these are called *lifecycle* functions loosely, even though technically speaking, they can be an array of lifecycle functions.
+Except for the `meta` property, these are called *lifecycle* functions loosely, even though technically speaking, they can be an array of lifecycle functions.
 
 Of all the interface properties, only the `mount` lifecycle function is required.  This property can be a function, an array of functions, or an array of either functions or array of functions.  Let's show an example.
 
@@ -111,11 +111,11 @@ const myPiece = {
 
 We could go on talking about differences.  For instance, *React* components re-render instead of using a signal mechanism like *Svelte* does.  However, this should be sufficient for us to understand this lifecycle function.
 
-### Capabilities
+### Metadata
 
-This is not a lifecycle function.  This is a POJO where piece developers can use to pass along any values they consider appropriate for very, very specialized scenarios.  Most people won't need to use this at all.
+This is not a lifecycle function.  This is a POJO piece developers can use to pass along any values they consider appropriate for very, very specialized scenarios.  Most people won't need to use this at all.
 
-What most people need to know, is that *CollageJS* has defined one property inside `capabilities`:  `remountable?: boolean`.  This is a property highly related to the `relocate` lifecycle function, and we will therefore defer the topic once more.
+What most people need to know, is that *CollageJS* has defined one metadata property:  `remountable?: boolean`.  This is a property that official adapters can enforce and that also relates to the `relocate` lifecycle function.  We will therefore defer the topic once more.
 
 ## Consuming Pieces
 
@@ -140,7 +140,7 @@ const mountedPiece = await mountPiece(myPiece, target, {
 
 In order, the parameters to `mountPiece` are:
 
-- `piece: CorePiece<TProps, TCap>` -- The piece object to mount
+- `piece: CorePiece<TProps, TMeta>` -- The piece object to mount
 - `target: AcceptableTarget` -- The parent object that will host the piece's user interface
 - `props: TProps` -- The properties accepted by the piece object
 
@@ -149,7 +149,7 @@ The returned `mountedPiece` object is of type `MountedPiece` and provides an int
 - `unmount` unmounts the piece
 - `update` updates the piece with a new set of property values
 - `relocate` relocates the piece without triggering a mounting cycle (if the piece supports it)
-- `capabilities` exposes the piece's `capabilities` property
+- `meta` exposes the piece's `meta` property
 
 ### A Better Way to Consume Pieces
 

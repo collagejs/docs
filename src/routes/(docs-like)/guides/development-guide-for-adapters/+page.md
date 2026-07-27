@@ -38,22 +38,22 @@ import type { CorePiece, Relocate } from '@collagejs/core';
 
 declare function buildPiece<
   TProps extends Record<string, any> = Record<string, any>,
-  TCap extends Record<string, any> = {}
->(component: FrameworkTypeForComponent<TProps>, options?: OptionsType<TCap>): CorePiece<TProps, TCap>;
+  TMeta extends Record<string, any> = {}
+>(component: FrameworkTypeForComponent<TProps>, options?: OptionsType<TMeta>): CorePiece<TProps, TMeta>;
 ```
 
-The `OptionsType` type should at least allow the specification of custom capabilities that correspond to the `TCap` type parameter.  It is also OK if this type is dependant on the `TProps` type parameter as well.
+The `OptionsType` type should at least allow the specification of custom metadata.  It is also OK if this type is dependant on the `TProps` type parameter as well.
 
 The other feature that an adapter should support in its option is `relocation?: 'supported' | 'unsupported' | Relocate`, which should trigger the creation of the `CorePiece` object with the requested relocation support.
 
 Summarizing, `OptionsType` should at least be:
 
 ```typescript
-import type { CorePieceCapabilities } from '@collagejs/core';
+import type { CorePieceMeta } from '@collagejs/core';
 
-export type Options<TCap extends Record<string, any> = {}> = {
+export type Options<TMeta extends Record<string, any> = {}> = {
   relocation?: 'supported' | 'unsupported' | Relocate;
-  capabilities?: CorePieceCapabilities & TCap;
+  meta?: CorePieceMeta & TMeta;
 }
 ```
 
@@ -65,7 +65,7 @@ Beyond this, adapter developers should make the most out of the framework the ad
 
 #### Implementation Details
 
-The goal is to return an object of type `CorePiece<TProps, TCap>` with the specified capabilities and relocation support.  Anything beyond this is optional, and developers should make full use of the front-end framework's features at their disposal.
+The goal is to return an object of type `CorePiece<TProps, TMeta>` with the specified metadata and relocation support.  Anything beyond this is optional, and developers should make full use of the front-end framework's features at their disposal.
 
 An implementation for `buildPiece` could look similar to this:
 
@@ -74,26 +74,26 @@ import { preventRemount } from '@collagejs/core';
 
 export function buildPiece<
   TProps extends Record<string, any> = Record<string, any>,
-  TCap extends Record<string, any> = {}
->(component: AmazingComponent<TProps>, options?: Options<TCap>) {
-  const instanceCtx = new SomeInstanceContextClass<TProps, TCap>();
+  TMeta extends Record<string, any> = {}
+>(component: AmazingComponent<TProps>, options?: Options<TMeta>) {
+  const instanceCtx = new SomeInstanceContextClass<TProps, TMeta>();
   // A default value of 'supported' is encouraged, but framework nature and abilities
   // should be taken into account to decide this default value.
   const relocation = options?.relocation ?? 'supported';
 
   return {
-    mount: options?.capabilities?.remountable === false ?
+    mount: options?.meta?.remountable === false ?
       [preventRemount(), mount.bind(instanceCtx)] :
       mount.bind(instanceCtx),
     update: update.bind(instanceCtx),
     relocate: typeof relocation === 'string' ? () => Promise.resolve(relocation) : relocation,
-    get capabilities() {
-      return options?.capabilities;
-    } satisfies CorePiece<TProps, TCap>;
+    get meta() {
+      return options?.meta;
+    } satisfies CorePiece<TProps, TMeta>;
   };
 
-  function mount(this: SomeInstanceContextClass<TProps, TCap>, ...) { ... }
-  function update(this: SomeInstanceContextClass<TProps, TCap>, ...) { ... }
+  function mount(this: SomeInstanceContextClass<TProps, TMeta>, ...) { ... }
+  function update(this: SomeInstanceContextClass<TProps, TMeta>, ...) { ... }
 }
 ```
 
@@ -101,7 +101,7 @@ This is one possible way to implement that shows a few important things:
 
 - If the caller explicitly states that the piece cannot be remounted, add `preventRemount()` to the list of mounting functions.
 - If it is customary for the framework components to not care about their parent element, a default value of `'supported'` for the `relocaiton` option is encouraged.
-- We forward the capabilities object specified in the options.
+- We forward the metadata object specified in the options.
 - All functions returned in the `CorePiece` object must not care about their context (the value of `this`) or must be pre-bound to a context, like the example shows.
 
 ### Piece Component
@@ -127,15 +127,15 @@ Most front-end frameworks and libraries allow data to their components in the fo
 const pieceProps = symbol();
 ```
 
-We can then accummulate any number of properties in the component's properties without consuming a property name.  However, it would be a bit cumbersome for consumers of the adapter if they had to do the symbol syntax on their own.
+We can then accumulate any number of properties in the component's properties without consuming a property name.  However, it would be a bit cumbersome for consumers of the adapter if they had to do the symbol syntax on their own.
 
 Because of this, official adapters export the `piece` (lowercase because the uppercase form is for the component itself) helper function that deals with the symbol-in-POJO syntax so consumers of the adapter library don't have to:
 
 ```typescript
 export function piece<
   TProps extends Record<string, any> = Record<string, any>,
-  TCap extends Record<string, any> = {}
->(piece: CorePiece<TProps, TCap>, options?: PieceOptions) {
+  TMeta extends Record<string, any> = {}
+>(piece: CorePiece<TProps, TMeta>, options?: PieceOptions) {
   return {
     [pieceProps]: {
       piece,

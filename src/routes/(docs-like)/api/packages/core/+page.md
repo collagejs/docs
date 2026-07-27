@@ -194,12 +194,12 @@ Mounts the provided `CorePiece` object inside the provided `target`.  The functi
 ```typescript
 function mountPiece<
   TProps extends Record<string, any> = Record<string, any>,
-  TCap extends Record<string, any> = {}
+  TMeta extends Record<string, any> = {}
 >(
-    piece: CorePiece<TProps, TCap>,
+    piece: CorePiece<TProps, TMeta>,
     target: AcceptableTarget,
     props?: TProps,
-): Promise<MountedPiece<TProps, TCap>>;
+): Promise<MountedPiece<TProps, TMeta>>;
 ```
 
 | Parameter | Description |
@@ -226,8 +226,8 @@ Returns an object that minimally satisfies the `CorePiece` type.
 ```typescript
 function noopPiece<
   TProps extends Record<string, any> = Record<string, any>,
-  TCap extends Record<string, any> = {},
->(): CorePiece<TProps, TCap>;
+  TMeta extends Record<string, any> = {},
+>(): CorePiece<TProps, TMeta>;
 ```
 
 ### preventRemount
@@ -235,7 +235,7 @@ function noopPiece<
 Generates a mount lifecycle function that can only be called once.  If it is called more than once, then an error is thrown.
 
 - Use it freely on core piece object creation whenever remounting should be strictly disallowed.
-- Official framework adapters automatically add it if `capabilities.remountable` is explicitly set to `false`.
+- Official framework adapters automatically add it if `meta.remountable` is explicitly set to `false`.
 - The most logical place for the generated function is at the beginning of the array of mount functions.
 
 ```typescript

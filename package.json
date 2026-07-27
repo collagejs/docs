@@ -5,8 +5,8 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
-		"prebuild": "npm run check:links && npm run check",
-		"build": "vite build && node scripts/generate-sitemap.ts",
+		"prebuild": "npm run check:links && npm run check && node scripts/generate-sitemap.ts",
+		"build": "vite build",
 		"preview": "vite preview",
 		"cf:dev": "wrangler dev .svelte-kit/cloudflare/_worker.js",
 		"cf:deploy": "wrangler deploy",

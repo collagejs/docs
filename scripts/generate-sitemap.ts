@@ -73,8 +73,8 @@ ${urlEntries}
  */
 async function main() {
     const routesDir = resolve('src/routes');
-    const buildDir = resolve('.svelte-kit/output/client');
-    const sitemapPath = join(buildDir, 'sitemap.xml');
+    const staticDir = resolve('static');
+    const sitemapPath = join(staticDir, 'sitemap.xml');
 
     console.log('🗺️  Generating sitemap...');
 

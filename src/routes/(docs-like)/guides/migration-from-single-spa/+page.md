@@ -238,7 +238,7 @@ There's a bit more we can do to take advantage of the more advanced *CollageJS* 
 
 ## The Hidden Plug-In:  @collagejs/vite-aim
 
-The *aim* part of the plug-in's name is an acronym for *autoexternalize import map*.  This is its main job and the way it does it is quite unique.  This plug-in is automatically added by `@collagejs/vite-im` and `@collagejs/vite-css`, hence a "hidden" plug-in.
+The *aim* part of the plug-in's name is an acronym for *auto-externalize import map*.  This is its main job and the way it does it is quite unique.  This plug-in is automatically added by `@collagejs/vite-im` and `@collagejs/vite-css`, hence a "hidden" plug-in.
 
 This plug-in adds an endpoint to Vite's development server that accepts the application's import map.  Who sends this information?  The answer is `@collagejs/imo`, the package in charge of overriding import map entries.
 

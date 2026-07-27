@@ -119,7 +119,20 @@ What *CollageJS* provides is the `@collagejs/vite-aim` plug-in.  *AIM* stands fo
 What does the theory above translates to, for the developer?  Freedom.  Auto-externalization of import map entries:
 
 - Allows developers to statically import from any externalized module as if it were installed as an NPM package
-- Saves developers from repeating the import map bare identifiers in Vite's `build.rolldownOptions.external` option
+- Saves developers from repeating the import map bare module specifiers in Vite's `build.rolldownOptions.external` option
 - Saves developers from searching, installing and configuring yet another Vite plug-in just to externalize while running the Vite development server
 
 In short:  `@collagejs/vite-im` and `@collagejs/vite-aim` covers almost every developer need, making up for an excellent DX.
+
+## Loading Core Pieces
+
+Let's get started on the main course:  How do we do this?  Wait a minute:  We have covered it already in previous topics.  Let's just compile what we have already seen in other documents here.
+
+- The preferred option is to use a *CollageJS* framework adapter for the framework our root project uses
+- We mount directly using the `mountPiece` function from the `@collagejs/core` package and manage the lifecycle through the returned object
+
+Our recommendation is to always use a framework adapter.  Are you using a front-end framework or library that doesn't have an adapter?  Feel free to [open an issue and ask for it](https://github.com/collagejs/collagejs/issues/new).  We don't guarantee that we will deliver, but it is a nice start.  Do it regardless of the outcome.  Who knows and maybe more people join the petition.  The more popular a request is, the more priority is given.
+
+You are also free to create your own adapter.  You can even use the [guide for official framework adapters](/guides/development-guide-for-adapters) and help yourself out by installing and using [@collagejs/adapter](/api/packages/adapter) to save you work and trouble.  If you made it this far, even consider donating the adapter so more people can find it an use it.  We are all part of the open-source movement, after all.
+
+Summarizing:  There should always be a way of mounting *CollageJS* core pieces in a front-end project, even if with pure JavaScript.  Framework adapters are just convenience, and never an imposition.

@@ -12,9 +12,9 @@
 
 We already know that we can use `npm create vite@latest` to produce a Vite-powered project using our preferred framework or library, be it React, Svelte, Vue, or anything else Vite can bundle.
 
-This is great for sure.  The amount of freedom is something many people can agree upon.  But there's one thing that people seem to (almost) always want when doing micro-frontends:  Routing.
+This is great for sure.  This amount of freedom is something many people can agree upon.  But there's one thing that people seem to (almost) always want when doing micro-frontends:  Routing.
 
-Especially if you come from the `single-spa` environment, you're used to getting a client-side router provided to you, and *CollageJS* does **not** provide a client-side router.  *CollageJS* is a bring-your-own-router kind of library, and we hope that this is great news to everyone.  Now people can use their preferred routing package for their projects.
+Especially if you come from the `single-spa` community, you're used to getting a client-side router provided to you, and *CollageJS* does **not** provide a client-side router.  *CollageJS* is a bring-your-own-router kind of library, and we hope that this is great news to everyone.  Now people can use their preferred routing package for their projects.
 
 Still, there will be people out there interested in a recommendation, and *CollageJS* happens to have a recommendation:  [webJose's Svelte Router](https://svelte-router.dev) is a router unlike any other and it brings a lot of power to micro-frontend scenarios because:
 
@@ -35,7 +35,7 @@ Our [root template](https://github.com/collagejs/root-template) template is a *V
 There are two, very easy ways to start.  You can either degit the repository:
 
 ```bash
-npx degit https://github.com/collagejs/root-template
+npx degit https://github.com/collagejs/root-template.git
 ```
 
 Or you can [clone it into a new repository (by clicking this link)](https://github.com/new?template_name=root-template&template_owner=collagejs).
@@ -84,7 +84,7 @@ The other "nicety" is that it forwards attributes to the container element.  The
 
 > **<Lightbulb /> Tip**
 >
-> There's a third feature in the page about the adapter that cannot be controlled with the provided controls:  The ability to set event listeners.  If you look closely, there's a tip just above the PIN pad component that disappears as soon as the PIN pad gains keyboard focus.  This is achieved with container event listeners for the `focusin` and `focusout` bubbling events.
+> There's a third feature in the page about the container that cannot be controlled with the provided controls:  The ability to set event listeners.  If you look closely, there's a tip just above the PIN pad component that disappears as soon as the PIN pad gains keyboard focus.  This is achieved with container event listeners for the `focusin` and `focusout` bubbling events.
 
 ## Enabling the IMO User Interface
 

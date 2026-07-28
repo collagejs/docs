@@ -34,7 +34,7 @@ export interface CorePiece<TProps, TMeta> {
 
 Except for the `meta` property, these are called *lifecycle* functions loosely, even though technically speaking, they can be an array of lifecycle functions.
 
-Of all the interface properties, only the `mount` lifecycle function is required.  This property can be a function, an array of functions, or an array of either functions or array of functions.  Let's show an example.
+Of all the interface properties, only the `mount` lifecycle function is required.  This property can be a function, an array of functions, or an array of either functions or array of functions.
 
 ### Mount
 
@@ -54,7 +54,7 @@ const myPieceComplex = {
 
 The `myPiece` object is the simplest form of `CorePiece`, and the example shows the actual function signature expected by *CollageJS*.  The `target` parameter can be an HTML element or a shadow root object, while the second one is an object with the properties the `CorePiece` object supports.
 
-On the other hand, `myPieceComplex` is an example of how mounting functions can be arranged:  We can nest arrays within arrays without issue.  This is normally not what we recommend developers to do, however.  The reason *CollageJS* supports this arrangement is to facilitate the composition of `CorePiece` objects.
+On the other hand, `myPieceComplex` is an example of how mounting functions can be arranged:  We can nest arrays within arrays without issue.  This is normally not what we recommend developers to do, however.  The reason *CollageJS* supports this arrangement is to facilitate the [composition](/docs/corepiece-composition) of `CorePiece` objects.
 
 #### Unmounting
 
@@ -68,9 +68,9 @@ const myPiece = {
     const root = document.createElement('div');
     // Etc. Fill the root element.
     target.appendChild(root);
-    return () => {
+    return Promise.resolve(() => {
       root.remove();
-    };
+    });
   },
 };
 ```
@@ -104,7 +104,8 @@ const myPiece = {
     myProps = {
       ...myProps,
       ...newProps
-    }
+    };
+    return Promise.resolve();
   },
 };
 ```
@@ -121,16 +122,21 @@ What most people need to know, is that *CollageJS* has defined one metadata prop
 
 Now that we know how the main building block (the piece object) works, we can complete the puzzle:  Let's mount a piece.
 
-Since we don't want to speak in terms of a framework or library, let's do some vanilla TypeScript:
+Since we don't want to speak in terms of a framework or library yet, let's do some vanilla TypeScript:
 
 ```typescript
 import { mountPiece } from '@collagejs/core';
 
 const pieceEl = document.querySelector('#piece');
-// Assuming we have made sure there's an element with id="piece" in our markup:
-const target = pieceEl; // If we want to mount directly in the DOM
-const target = pieceEl!.attachShadow({ mode: 'open' }); // If we want to mount in an open shadow root
-const target = pieceEl!.attachShadow({ mode: 'closed' }); // If we want to mount in an closed shadow root
+// Assuming we have made sure there's an element 
+// with id="piece" in our markup:
+
+// If we want to mount directly in the DOM
+const target = pieceEl; 
+// If we want to mount in an open shadow root
+const target = pieceEl!.attachShadow({ mode: 'open' });
+// If we want to mount in an closed shadow root
+const target = pieceEl!.attachShadow({ mode: 'closed' });
 
 const mountedPiece = await mountPiece(myPiece, target, {
   prop1: 'Hello',

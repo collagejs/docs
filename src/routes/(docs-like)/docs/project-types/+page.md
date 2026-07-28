@@ -1,15 +1,15 @@
 ---
   title: Project Types
   description: |
-    Learn about the two project types encountered when using CollageJS to produce micro-frontend-powered applications.
+    Learn about the two project types encountered when using CollageJS to produce micro-frontend-powered applications, along with basic instructions on how to create each of the types.
 ---
 
 <script lang="ts">
     import type { PageProps } from './$types';
-    import { Flag, Info, Lightbulb, TriangleAlert } from '@lucide/svelte';
+    import { Flag, Info, Lightbulb, MessageCircleQuestionMark, TriangleAlert } from '@lucide/svelte';
 </script>
 
-There are 2 project types:
+*CollageJS* applications are comprised of at least 2 web projects, one of each of the following types:
 
 - Root projects
 - Piece projects
@@ -29,7 +29,7 @@ There are countless ways to create one of these.  Once more:  *CollageJS* doesn'
 
 > **<Lightbulb /> There are more `create` commands!**
 >
-> For example, there is `npm create vue@latest` that creates a VueJS-powered application project that is Vite-powered.  Yes, `npm create vite@latest` can also create a VueJS-powered project.  They are just different but both should work OK as root projects.
+> For example, there is `npm create vue@latest` that creates a VueJS application project that is Vite-powered.  Yes, `npm create vite@latest` can also create a VueJS project.  They are just different but both should work OK as root (or piece) projects.
 
 To know more about the root template alternative, read the [root template](/docs/the-root-template) topic.  From this point forward, we'll see about using `npm create vite`.
 
@@ -40,7 +40,7 @@ npm create vite@latest -- --template svelte-ts
 ```
 > <Info /> This is not a Vite tutorial, so we'll assume the reader will be able to get to the point where the project is created, configured and running.
 
-As your root project currently stands, you *can* start mounting pieces using the `mountPiece` function from `@collagejs/core`, assuming you proceed to install this package.  If you take this route, you'll be able to manage the mounted pieces as shown in the [introduction](/docs/introduction).
+As your root project currently stands, you *can* start mounting pieces using the `mountPiece` function from `@collagejs/core`, assuming you proceed to install this package.  If you take this route, you'll be able to manage the mounted pieces as shown in the [introduction](/docs/introduction#consuming-pieces).
 
 However and also mentioned in the introduction, there are better ways to do things.  If your chosen template when creating your root project corresponds to a technology covered by an adapter (be it official or not), you can instead proceed to install said adapter.
 
@@ -95,7 +95,8 @@ In order to start coding our piece, we add a new component file.  Since we creat
 ```typescript
 // src/Root.tsx
 
-import './root.css'; // We can import some CSS to make the component pretty, if we like.
+// We can import some CSS to make the component pretty, if we like.
+import './root.css';
 
 export type RootProps = {
   name?: string;
@@ -110,7 +111,7 @@ export function Root(props: RootProps) {
 }
 ```
 
-We can preview this `Root` component by adding it to `App.tsx`, so we can preview it with Vite's serve mode.  Feel free to do so and make it look pretty.  Perhaps a nice background, or maybe a handshake icon somewhere, etc.
+We can preview this `Root` component by adding it to `App.tsx` and starting Vite's development server, a. k. a. serve mode (`npm run dev`).  Feel free to do so and make it look pretty.  Perhaps a nice background, or maybe a handshake icon somewhere, etc.
 
 Once we're happy with the result, we recommend exporting a factory function that creates `CorePiece` objects that wrap the `Root` component.  Because we're going to add the [Vite-CSS plug-in](/docs/vite-css-plugin) to the project, we'll follow this plug-in's default options and create the `src/piece.ts` file.
 
@@ -181,7 +182,11 @@ Somewhere inside `App.svelte`, we're going to add the React piece.  To do this, 
 
 If you are a seasoned micro-frontends developer, you'll probably realize at this point that we will import directly from the piece project's Vite server (either development or preview).  For Vite to allow us to do it, we have to use the dynamic `import()` statement... Or do we?
 
-The answer is: We don't!  By leveraging the use of an import map and the automatic externalization that the [Vite-AIM plug-in](/docs/vite-aim-plugin) provides, we can use static import statements when importing piece factory functions.  Let's set it up.
+The answer is: We don't!  By leveraging the use of an import map and the automatic externalization that the [Vite-AIM plug-in](/docs/vite-aim-plugin) provides, we can use static import statements when importing piece factory functions.
+
+> **<MessageCircleQuestionMark /> Huh?  Vite-AIM?  Auto Externalization??**
+>
+> Ok, fair questions.  Really quick:  Is not a typo.  We didn't mean to write *Vite-IM* and an extra "A" got in there.  This is a third plug-in that is automatically installed by the other two plug-ins (*Vite-IM* and *Vite-CSS*).  Let's just not delve into plug-in details right now.
 
 Install the IM plug-in:
 
@@ -220,7 +225,7 @@ Now and following the plug-in's default options, we'll add the `src/importMap.js
 
 We have come up with the bare module identifier (a. k. a. bare module specifier) `@tutorial/react-piece` to refer to our React piece.  The web browser will read the import map and will divert itself to the URL we have written in the import map entry.
 
-Because of the wonders of the *Vite-AIM* plug-in, we can directly import our `myPieceFactory` function from the React piece project using a static import statement and use it:
+Because of the wonders of the *Vite-AIM* plug-in, we can directly import our `myPieceFactory` function from the React piece project using a static import statement:
 
 ```typescript
 // Inside App.svelte's script tag
@@ -230,7 +235,7 @@ import { myPieceFactory } from '@tutorial/react-piece';
 const reactPiece = myPieceFactory();
 ```
 
-Ok, so we are not entirely done.  At this point, TypeScript complains that this module is unknown.  That's ok.  We can teach TypeScript about the module with an [ambient module](https://www.typescriptlang.org/docs/handbook/modules/reference.html#ambient-modules):
+Ok, so we are not entirely done.  At this point, TypeScript complains that this module is unknown.  That's ok.  We can teach TypeScript about the module with an [ambient module](https://www.typescriptlang.org/docs/handbook/modules/reference.html#ambient-modules).
 
 Add the ambient module to a `.d.ts` file in your project.  Vite-powered projects usually have at least one of these ready to be used:
 
@@ -253,6 +258,7 @@ Continuing in `App.svelte`, we proceed to add the `<Piece>` component somewhere 
 ```svelte
 <Piece {...piece(reactPiece, { shadow: true })} name="José" />
 ```
+
 > **<TriangleAlert /> CAUTION**
 >
 > Change `shadow` to `false` if you started the piece project's development server.

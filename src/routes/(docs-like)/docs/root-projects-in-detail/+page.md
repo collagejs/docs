@@ -29,7 +29,7 @@ import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { cjsImPlugin } from '@collagejs/vite-im';
 
 export default defineConfig({
-    plugins: [svelte(), cjsImPlugin()],
+    plugins: [svelte(), cjsImPlugin(/* options */)],
 });
 ```
 
@@ -46,7 +46,7 @@ In short, an import map is a substitution table, where a *bare module specifier*
 - Injects `@collagejs/imo` that serves as a developer tool for overriding import map entries
 - Sets up and configure *CollageJS*' auto-extrnalization plug-in `@collagejs/vite-aim`
 
-There are several ways to specify import maps, but we'll only cover 2 here.  For detailed information, refer to the **Import Maps** section of the documentation.
+There are several ways to specify import maps, but we'll only cover 2 here.  For detailed information, refer to the [Vite-IM Plug-in](/docs/vite-im-plugin) document in the **Vite** section.
 
 ### How to Use Import Maps
 
@@ -112,7 +112,7 @@ One would need to know a little bit about how Vite works in serve mode (`npm run
 
 The concept of *externalization of modules* is not difficult:  It means that we can tell our bundler (Vite) to not bundle specific ES modules, and we do so by specifying Vite's configuration option `build.rolldownOptions.external`.  *CollageJS* doesn't meddle with this at all.  Feel free to use it if needed.
 
-What *CollageJS* provides is the `@collagejs/vite-aim` plug-in.  *AIM* stands for *Auto-externalize Import Map".  How does it do it?  That's where Vite knowledge comes in handy, but I think we can settle the matter by stating that this plug-in simply tells Vite to externalize a module if the import map it knows can resolve it.  Since this is not a Vite plug-ins lesson, please pardon our lack of willingness to explain further, but if you're interested, read about Rolldown's `resolveId` hook.
+What *CollageJS* provides is the `@collagejs/vite-aim` plug-in.  *AIM* stands for "Auto-externalize Import Map".  How does it do it?  That's where Vite knowledge comes in handy, but I think we can settle the matter by stating that this plug-in simply tells Vite to externalize a module if the import map it knows can resolve it.  Since this is not a Vite plug-ins lesson, please pardon our lack of willingness to explain further, but if you're interested, read about Rolldown's `resolveId` hook.
 
 ### Practical Implications of AIM
 
@@ -126,7 +126,7 @@ In short:  `@collagejs/vite-im` and `@collagejs/vite-aim` covers almost every de
 
 ## Loading Core Pieces
 
-Let's get started on the main course:  How do we do this?  Wait a minute:  We have covered it already in previous topics.  Let's just compile what we have already seen in other documents here.
+Let's get started on the main course:  How do we do this?  Wait a minute:  We have covered it already in previous topics.  Let's just compile the alternatives we have already seen in other documents here.
 
 - The preferred option is to use a *CollageJS* framework adapter for the framework our root project uses
 - We mount directly using the `mountPiece` function from the `@collagejs/core` package and manage the lifecycle through the returned object

@@ -32,10 +32,6 @@
         "title": "Import Maps",
         "articles": [
             {
-                "title": "Overview",
-                "href": "/docs/import-maps-overview"
-            },
-            {
                 "title": "Import Maps in CollageJS",
                 "href": "/docs/import-maps-in-collagejs"
             },

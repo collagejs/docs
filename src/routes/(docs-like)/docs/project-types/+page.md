@@ -16,7 +16,7 @@
 
 A *root project* is the central or main web project.  It is in charge of setting things up for piece (micro-frontend) consumption.  Usually --but not necessarily--, this is a project that sets up the application's layout and routing mechanisms.
 
-Root projects can be created using any framework or library.  *CollageJS* doesn't impose any restrictions.  The only thing that *CollageJS* does and does it through its [Vite-IM plug-in](/docs/vite-im-plugin) is inject an import map and the tool to perform import map entry overriding.  If you're unfamiliar with import maps and how they help micro-frontend applications, read the [import maps overview](/docs/import-maps-overview) and subsequent topics.
+Root projects can be created using any framework or library.  *CollageJS* doesn't impose any restrictions.  The only thing that *CollageJS* does and does it through its [Vite-IM plug-in](/docs/vite-im-plugin) is inject an import map and the tool to perform import map entry overriding.  If you're unfamiliar with import maps and how they help micro-frontend applications, read about [import maps here](/docs/import-maps-in-collagejs).
 
 The other type of project is the *piece project*.  Piece projects are web projects that export one or more **factory functions** that create `CorePiece` objects.  We say factory functions because, even though it is legal to export a pre-built `CorePiece` object, it is not desirable because it makes reuse more difficult.  We prefer factories so we can create pieces when needed.  Furthermore, exporting factory functions allow said factories to optionally accept configuration options, which is a great tool for more complex scenarios.
 

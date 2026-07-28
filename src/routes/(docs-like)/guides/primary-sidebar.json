@@ -24,5 +24,14 @@
                 "href": "/guides/development-guide-for-adapters"
             }
         ]
+    },
+    {
+        "title": "Deployment",
+        "articles": [
+            {
+                "title": "Common Deployment Strategies for CollageJS",
+                "href": "/guides/common-deployment-strategies-for-collagejs"
+            }
+        ]
     }
 ]

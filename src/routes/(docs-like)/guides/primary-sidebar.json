@@ -12,6 +12,14 @@
         "title": "Development",
         "articles": [
             {
+                "title": "Writing CSS for CollageJS",
+                "href": "/guides/writing-css-for-collagejs"
+            },
+            {
+                "title": "TypeScript Support in CollageJS",
+                "href": "/guides/typescript-support-in-collagejs"
+            },
+            {
                 "title": "Development Guide for Adapters",
                 "href": "/guides/development-guide-for-adapters"
             }

@@ -18,7 +18,7 @@ import type { ArticleDefinition } from "../../../types.js";
 <nav class="widget widget-rounded gap-2 p-2">
     <a class={["cjs-btn cjs-btn-primary cjs-btn-outline", 'flex-grow-1', !prev && 'invisible']} href={prev?.href ?? "#"}>
         <div class="d-flex flex-column align-items-start w-100">
-            <Rewind />
+            <Rewind fill="var(--hover-fill)" />
             <span class="cjs-text-muted">Previous</span>
             {#if prev}
                 <span>{prev.title}</span>
@@ -27,7 +27,7 @@ import type { ArticleDefinition } from "../../../types.js";
     </a>
     <a class={["cjs-btn cjs-btn-primary cjs-btn-outline", 'flex-grow-1', !next && 'invisible']} href={next?.href ?? "#"}>
         <div class="d-flex flex-column align-items-end w-100 text-end">
-            <FastForward />
+            <FastForward fill="var(--hover-fill)" />
             <span class="cjs-text-muted">{start? 'Start' : 'Next'}</span>
             {#if next}
                 <span>{next.title}</span>
@@ -40,5 +40,9 @@ import type { ArticleDefinition } from "../../../types.js";
     nav {
         display: grid;
         grid-template-columns: 1fr 1fr;
+
+        & a:hover, & a:focus {
+            --hover-fill: currentColor;
+        }
     }
 </style>

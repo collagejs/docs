@@ -45,10 +45,6 @@
         "title": "Framework Adapters",
         "articles": [
             {
-                "title": "Definition & Objectives",
-                "href": "/docs/adapter-definition-and-objectives"
-            },
-            {
                 "title": "Official Adapters",
                 "href": "/docs/official-adapters"
             }

@@ -63,12 +63,13 @@ Let's tabulate the differences.  Some of these are actual problems or bugs found
 > 
 > In *CollageJS*, the mounting function returns the unmounting function.  As for `bootstrap`... well, we lost it.  There is no equivalent lifecycle function in *CollageJS*.
 
-Furthermore, the list of official adapters for *CollageJS* is more reduced, at least for the time being.  Eventually, we want to provide official adapters for:
+Furthermore, the list of official adapters for *CollageJS* is more reduced, at least for the time being.  For the first stable, version 1.0 release (end of 2026), we want to have official adapters for:
 
 - **Svelte**
 - **React**
-- VueJS
+- **VueJS**
 - SolidJS
+- Ripple-TS
 
 Where the ones in bold already exist.
 

@@ -90,7 +90,7 @@ A new `Stack` object containing the provided items.
 
 ##### isEmpty
 
-Checks is the stack is empty.
+Checks if the stack is empty.
 
 ```typescript
 isEmpty(): boolean;
@@ -196,9 +196,9 @@ function mountPiece<
   TProps extends Record<string, any> = Record<string, any>,
   TMeta extends Record<string, any> = {}
 >(
-    piece: CorePiece<TProps, TMeta>,
-    target: AcceptableTarget,
-    props?: TProps,
+  piece: CorePiece<TProps, TMeta>,
+  target: AcceptableTarget,
+  props?: TProps,
 ): Promise<MountedPiece<TProps, TMeta>>;
 ```
 
@@ -235,7 +235,7 @@ function noopPiece<
 Generates a mount lifecycle function that can only be called once.  If it is called more than once, then an error is thrown.
 
 - Use it freely on core piece object creation whenever remounting should be strictly disallowed.
-- Official framework adapters automatically add it if `meta.remountable` is explicitly set to `false`.
+- Official framework adapters automatically add it if the `remountable` option is explicitly set to `false` when calling `buildPiece`.
 - The most logical place for the generated function is at the beginning of the array of mount functions.
 
 ```typescript
@@ -254,4 +254,5 @@ A function that satisfies the signature for mount lifecycle functions that preve
 
 Constant value of type `symbol` used to deliver the children-aware `mountPiece` function to the core piece object using the piece's initial properties POJO.
 
-Official framework adapters usually extract this `mountPiece` function from the properties POJO and make it available through the framework's contextual data system.
+- Official framework adapters extract this `mountPiece` function and make it available through the framework's contextual data mechanism.
+- Use the helper function [extractMountPieceFromProps](/api/packages/adapter#extractmountpiecefromprops) from the `@collagejs/adapter` library.

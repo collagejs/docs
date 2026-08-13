@@ -63,13 +63,14 @@ Let's tabulate the differences.  Some of these are actual problems or bugs found
 > 
 > In *CollageJS*, the mounting function returns the unmounting function.  As for `bootstrap`... well, we lost it.  There is no equivalent lifecycle function in *CollageJS*.
 
-Furthermore, the list of official adapters for *CollageJS* is more reduced, at least for the time being.  For the first stable, version 1.0 release (end of 2026), we want to have official adapters for:
+Furthermore, the list of official adapters for *CollageJS* is more reduced (at least for the time being) but covers more modern options.  For the first stable version 1.0 release (end of 2026/start of 2027), we want to have official adapters for:
 
-- **Svelte**
+- Preact
 - **React**
-- **VueJS**
-- SolidJS
 - Ripple-TS
+- SolidJS
+- **Svelte**
+- **VueJS**
 
 Where the ones in bold already exist.
 
@@ -85,12 +86,16 @@ Great, so now we can speed things up a little because we know what is and what i
 
 ## Must-Have's
 
-Your projects must satisfy a small set of absolute, non-negotiable requirements:
+Your projects must satisfy a small set of absolute, non-negotiable requirements if the Vite plug-ins and the framework adapters are desired:
 
-- If the project is not Vite-powered, first migrate to Vite.
+- If the project is not Vite-powered and you would like to use our plug-ins, migrate to Vite.
 - If the project is for React v17 or earlier, migrate to at least React v18.
 - If the project is for Svelte v4 or earlier, migrate to Svelte v5.
-TODO: Add versions for other packages.
+- If the project uses a Vue runtime less than v3.3, upgrade to at least v3.3.
+
+> **<Info /> Requirements Are for Goodies**
+> 
+> If a project cannot meet the must-have's, it can still work with *CollageJS*.  The `@collagejs/core` and `@collagejs/imo` libraries don't have any of these requirements.  Goodies are the Vite plug-ins and framework adapters.  The worst that can happen is that `@collagejs/imo` won't be able to share the import map with the project that could not satisfy the Vite plug-in must-have's.
 
 ## Migrating the Root Project
 
@@ -217,12 +222,12 @@ export function markdownEditorFactory() {
   return {
     ...piece,
     mount: [mount, piece.mount],
-    relocate: [relocate, piece.relocate]
+    relocate: [piece.meta.relocatable && relocate, piece.relocate]
   };
 }
 ```
 
-We are done... with the basics.  Now the project produces *CollageJS* pieces.  If you also skipped clean-up, then it is also still capable of producing *single-spa* micro-frontends or parcels.  All that is needed is two different `build` commands in `package.json` that use different Vite configuration files.
+We are done... with the basics.  Now the project produces *CollageJS* pieces.  If you also skipped clean-up, then the project is also still capable of producing *single-spa* micro-frontends or parcels.  All that is needed is two different `build` commands in `package.json` that use different Vite configuration files.
 
 There's a bit more we can do to take advantage of the more advanced *CollageJS* plug-in.  This is found in the next section.  In the meantime, here's a summary of what you've gained.
 
@@ -271,6 +276,17 @@ export default defineConfig({
 
 ## Wrap-Up
 
-As seen, the code migrations are quite simple and familiar while still gaining significantly in developer experience and bug-riddance.
+As seen, the code migrations are quite simple and familiar while still gaining significantly in developer experience and bug-riddance:
+
+- Full TypeScript support
+- Mount and use as many copies of a core piece as needed
+- Don't fight or work around layout issues coming from the unmaintained layout engine from `single-spa` and instead route like a boss with your favorite router
+- If an adapter exists for your framework, it covers both creating pieces and mounting pieces, not just one
+- Isolate pieces easily by mounting them in shadow DOM
+- No more name collisions on the property namespace for pieces and the `<Piece>` component used to mount it
+- No issues with React's *Strict Mode* as `@collagejs/react` works perfectly under it
+- All options for React's `createRoot` can be specified
+- React, Svelte and Vue all provide the `update` lifecycle
+- Idempotent `unmount` lifecycle
 
 Enjoy *CollageJS*!

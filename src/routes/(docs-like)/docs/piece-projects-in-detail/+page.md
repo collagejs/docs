@@ -9,7 +9,7 @@
     import { Info, Lightbulb, MessageCircleQuestionMark } from '@lucide/svelte';
 </script>
 
-A *CollageJS* application is comprised of one root project (explained in the previous topic) and at least one *core piece project*, which is the topic of this document.  Just like with root projects, any web project can be made into a core piece project because *CollageJS* is nothing but a small set of requirements that can be fulfilled and used by just using [@collagejs/core](/api/packages/core).  However, it is more convenient to use the additional goodies we provide.
+A *CollageJS* application is comprised of exactly one root project (explained in the previous topic) and at least one *core piece project*, which is the topic of this document.  Just like with root projects, any web project can be made into a core piece project because *CollageJS* is nothing but a small set of requirements that can be fulfilled and used by just using [@collagejs/core](/api/packages/core).  However, it is more convenient to use the additional goodies we provide.
 
 A *CollageJS core piece project* is a Vite-powered project that uses the [Vite-CSS](/api/packages/vite-css) plug-in and that exports at least one core piece factory function from at least one entry file (module).
 
@@ -27,7 +27,10 @@ We can now add it to our `vite.config.ts` file:
 import { cjsCssPlugin } from '@collagejs/vite-css';
 
 export default defineConfig({
-  plugins: [..., cjsCssPlugin({ aim: false, serverPort: 6101 })],
+  plugins: [..., cjsCssPlugin({
+    aim: false,
+    serverPort: 6101
+  })],
   ...
 });
 ```
@@ -38,7 +41,7 @@ However, notice that we specified in the code above the `aim` option.  We have s
 
 AIM works by **blocking incoming HTTP GET requests** if it hasn't received an import map from `@collagejs/imo`, the import map-overriding tool.  This reception is normally very fast, but what if we have just started setting up our *CollageJS* applications?  What if we haven't defined an import map in our root project, meaning that `@collagejs/imo` doesn't have anything to send?  What then?  We'll tell you what:  All HTTP GET requests to your development Vite server will be pointlessly blocked.  Pointlessly because the expected import map will never arrive, at least during this early stage of the development.
 
-Yes, the blockade is not indefinite.  After a short period of time, the HTTP GET request is unblocked and your project's user interface eventually shows up in your browser.  But you had to wait.  You had to endure the timeouts.  You had to wait about 10-15 seconds just to see your project loaded for the first time.
+Yes, the blockade is not indefinite.  After a short period of time (2 seconds by default), the HTTP GET request is unblocked and your project's user interface eventually shows up in your browser.  But you had to wait.  You had to endure the timeouts.  You had to wait about 10-15 seconds just to see your project loaded for the first time.
 
 To avoid this annoyance during early development, we specify `aim: false` in the plug-in's options.  We turn AIM off until the time it is actually useful, and we'll tell you a little something:  Some projects never end up needing it.
 
@@ -62,9 +65,9 @@ What we can suggest is one way of doing this.
 
 We suggest that you blank out the main application component and the main CSS file to go back to a blank (or empty) application.  Just get to the point where the core piece project renders an HTML with nothing in its BODY element..., well, nothing but a DIV element with the `#app` ID attribute value, which is what is most common in Vite applications created with `npm create vite@latest`.
 
-Now we can start.  We usually **don't use the App component** to be the core piece component.  We suggest using this `App` component as your testing grounds for the core piece or pieces you will be exporting from the project. This is what we explained in the previous section, where we were forced to speak a little about piece projects within the context of root projects, so we could talk about mounting pieces.
+Now we can start.  We usually **don't use the App component** to be the core piece component.  We suggest using this `App` component as your testing grounds for the core piece or pieces you will be exporting from the project. This is what we explained in the previous document, where we were forced to speak a little about piece projects within the context of root projects, so we could talk about mounting pieces.
 
-We start adding new components:  One per core piece to be exported.  Select appropriate names for their files and just start developing them.  Once you have something mountable, add it to the `App` component.  Now we can see our progress live.  Continue developing until the component is fully done.
+We start adding new components:  One per core piece to be exported because a single piece project may export an unlimited number of core pieces.  Select appropriate names for their files and just start developing them.  Once you have something mountable, add it to the `App` component.  Now we can see our progress live.  Continue developing until the component is fully done.
 
 ### Exporting the Core Piece Factory Function(s)
 
@@ -105,7 +108,7 @@ And this should bring our piece to life and available for consumption.  The root
 
 Every time we have a new core piece added to our *CollageJS* project, we need to assign it a *bare module specifier* that we add to the root project's import map.  Let's give our calculator core piece the bare identifier `@tutorial/calculator`.
 
-Open your import map file(s) and add this to the import map's `imports` section.  Usually, we use `src/importMap.dev.json` and `src/importMap.json`.  The development entry should look something like this:
+Open your import map file(s) and add this to the import map's `imports` section.  Usually, we use `src/importMap.dev.json` and `src/importMap.json`.  The development entry should look something like this for a Vite development server:
 
 ```json
 {
@@ -117,7 +120,7 @@ Open your import map file(s) and add this to the import map's `imports` section.
 
 As explained in the previous topic, we can't tell you exactly what to put in your non-development import map.  It is dependant on how the code will be deployed.
 
-The above URL is the one we need if we're going to start our core piece project's **development sever**.  Change it to `"http://localhost:6101/piece.js"` if you wish to build and start the **preview server** instead.
+The above URL is the one we need if we're going to start our core piece project's **development sever**.  Change it to `"http://localhost:6101/piece.js"` if you wish to build and start the **preview server** instead.  If you want to mount inside a shadow root, you must use Vite's preview server.
 
 > **<Lightbulb /> Tip**
 >
@@ -160,9 +163,9 @@ We have seen this procedure before, but let's review it again here.
     <Piece {...piece(calculatorPiece)} />
     ```
 
-Without knowing the specifics of the core piece, we cannot show anything more specific.  Let's just remember that we should be able to also pass along any properties to the core piece as if they were properties of the host, `Piece`.
+Without knowing the specifics of the core piece, we cannot show anything more specific.  Let's just remember that we should be able to also pass along any properties to the core piece as if they were properties of the host, `Piece` component.
 
-Let's also remember that we can specify our preference in target:  We can mount in light DOM, or in an open or closed shadow root.  It all boils down to the what the framework adapter you're using supports.
+Let's also remember that we can specify our preference in target:  We can mount in light DOM, or in an open or closed shadow root.  It all boils down to the what the framework adapter you're using supports.  So far, all official adapters support shadow DOM mounting and container properties.
 
 ---
 

@@ -71,7 +71,7 @@ Any CSS file that is imported using the file extension `.module.css` is a CSS mo
 
 ### Tip 3:  @Scoped CSS
 
-This is not to be confused with the other section, named almost identically.  This is a new feature in CSS named *Scoped Styles*, but people might refer to it as scoped CSS.
+This is not to be confused with the previous section, named almost identically.  This is a new feature in CSS named *Scoped Styles*, but people might refer to it as scoped CSS.
 
 According to the [caniuse](https://caniuse.com/css-cascade-scope) website, the feature has recently become available in all the browsers the majority of people use.  As of this writing, the web page showed **88% support worldwide**.
 
@@ -109,7 +109,7 @@ But what if said *global* stylesheets were inside this scope?
 }
 ```
 
-Eureka! Now common class names like `"button"` or `"btn"` have zero probability of spilling over the content inside the defined scope limit, and this scope limit in *CollageJS* means the container provided by a `<Piece>` component, meaning content from an outside web project (a piece project).
+Eureka! Now common class names like `"button"` or `"btn"` have zero probability of spilling over the content inside the defined scope limit, and this scope limit in *CollageJS* means the container provided by a `<Piece>` component, meaning content from an outside web project:  A piece project.
 
 > **<Info />  Official Framework Adapter Feature**
 >

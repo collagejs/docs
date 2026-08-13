@@ -24,7 +24,7 @@ Still, there will be people out there interested in a recommendation, and *Colla
 
 To the best of our knowledge, no other router in the world can do the above, and it so happens to be a very useful thing in micro-frontends.
 
-Our [root template](https://github.com/collagejs/root-template) template is a *Vite + TS + Svelte* project with *webJose's Svelte Router* installed and configured.
+Our [root template](https://github.com/collagejs/root-template) is a *Vite + TS + Svelte* project with *webJose's Svelte Router* installed and configured.
 
 > **<Flag /> Svelte Knowledge Required**
 >

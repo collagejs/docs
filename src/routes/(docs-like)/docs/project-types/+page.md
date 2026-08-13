@@ -158,7 +158,7 @@ export function myPieceFactory() {
   return {
     ...piece,
     mount: [mount, piece.mount],
-    relocate: [relocate, piece.relocate],
+    relocate: [piece.meta?.relocatable && relocate, piece.relocate],
   };
 }
 ```

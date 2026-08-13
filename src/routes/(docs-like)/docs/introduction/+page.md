@@ -25,7 +25,10 @@ export interface CorePiece<TProps, TMeta> {
   mount: MountFn<TProps> | MountFn<TProps>[];
   relocate?: RelocateFn | RelocateFn[];
   update?: UpdateFn<TProps> | UpdateFn<TProps>[];
-  meta?: TMeta & { remountable?: boolean; };
+  meta?: TMeta & {
+    remountable?: boolean;
+    relocatable?: boolean;
+  };
 }
 ```
 > **<Flag /> NOTE**
@@ -34,11 +37,11 @@ export interface CorePiece<TProps, TMeta> {
 
 Except for the `meta` property, these are called *lifecycle* functions loosely, even though technically speaking, they can be an array of lifecycle functions.
 
-Of all the interface properties, only the `mount` lifecycle function is required.  This property can be a function, an array of functions, or an array of either functions or array of functions.
+Of all the interface properties, only the `mount` lifecycle function is required.  This property can be a function, an array of functions, or an array of either functions or array of functions (not shown in the type because it is simplified).
 
 ### Mount
 
-Assuming that each letter below is a function that satisfies the `MountFn` type, the following objects are valid `CorePiece` objects:
+The following objects are valid `CorePiece` objects:
 
 ```typescript
 const myPiece = {
@@ -51,6 +54,8 @@ const myPieceComplex = {
   mount: [a, b, [c, d, [e, f, g]], h, null, false, undefined],
 };
 ```
+
+In the second example, each letter is a function that satisifies the `MountFn` type.
 
 The `myPiece` object is the simplest form of `CorePiece`, and the example shows the actual function signature expected by *CollageJS*.  The `target` parameter can be an HTML element or a shadow root object, while the second one is an object with the properties the `CorePiece` object supports.
 
@@ -70,6 +75,7 @@ const myPiece = {
     target.appendChild(root);
     return Promise.resolve(() => {
       root.remove();
+      return Promise.resolve();
     });
   },
 };
@@ -116,7 +122,10 @@ We could go on talking about differences.  For instance, *React* components re-r
 
 This is not a lifecycle function.  This is a POJO piece developers can use to pass along any values they consider appropriate for very, very specialized scenarios.  Most people won't need to use this at all.
 
-What most people need to know, is that *CollageJS* has defined one metadata property:  `remountable?: boolean`.  This is a property that official adapters can enforce and that also relates to the `relocate` lifecycle function.  We will therefore defer the topic once more.
+What most people need to know, is that *CollageJS* has defined two metadata properties:
+
+1. `remountable?: boolean`.  This is a property that official adapters can enforce and that also relates a little to the `relocate` lifecycle function.  We will therefore defer the topic once more.
+2. `relocatable?: boolean`.  Once more and related to relocation, this property is usually set by official adapters to the appropriate value depending on the options given to its `buildPiece` function.
 
 ## Consuming Pieces
 
@@ -127,16 +136,16 @@ Since we don't want to speak in terms of a framework or library yet, let's do so
 ```typescript
 import { mountPiece } from '@collagejs/core';
 
-const pieceEl = document.querySelector('#piece');
 // Assuming we have made sure there's an element 
 // with id="piece" in our markup:
+const pieceEl = document.querySelector('#piece')!;
 
 // If we want to mount directly in the DOM
 const target = pieceEl; 
 // If we want to mount in an open shadow root
-const target = pieceEl!.attachShadow({ mode: 'open' });
+const target = pieceEl.attachShadow({ mode: 'open' });
 // If we want to mount in an closed shadow root
-const target = pieceEl!.attachShadow({ mode: 'closed' });
+const target = pieceEl.attachShadow({ mode: 'closed' });
 
 const mountedPiece = await mountPiece(myPiece, target, {
   prop1: 'Hello',
@@ -157,9 +166,9 @@ The returned `mountedPiece` object is of type `MountedPiece` and provides an int
 - `relocate` relocates the piece without triggering a mounting cycle (if the piece supports it)
 - `meta` exposes the piece's `meta` property
 
-### A Better Way to Consume Pieces
+### A Better Way to Create and Consume Pieces
 
-We learned that we can use `mountPiece` and its return value to mount a core piece and then manage its lifecycle.  This is both great and powerful, but it is cumbersome.  Yes, the no-framework font-end developers exist and are many, and we *know* they are shaking their heads right now.  If you are one of those, then you're probably all set and ready to start experimenting by yourself.
+We learned that we can use `mountPiece` and its return value to mount a core piece and then manage its lifecycle.  This is both great and powerful, but it can become tedious and repetitive.  Yes, the no-framework font-end developers exist and are many, and we *know* they are shaking their heads right now.  If you are one of those, then you're probably all set and ready to start experimenting by yourself.
 
 But if you're not one of those developers, you want a friendlier way to consume pieces.  We understand fully.  This is where *adapters* enter the equation.
 
@@ -188,7 +197,11 @@ This is an example of how we can consume a `CorePiece` object (no matter its nat
   const myPiece = obtainTheCorePieceSomehow();
 </script>
 
-<Piece {...piece(myPiece, { shadow: true })} prop1="Hello" prop2="CollageJS!" />
+<Piece
+  {...piece(myPiece, { shadow: true })}
+  prop1="Hello"
+  prop2="CollageJS!"
+/>
 ```
 
 Generally speaking, adapter libraries work this way regardless of their framework.  If a particular adapter cannot fulfill the standardized API for any reason, the adapter's documentation will cover the difference(s).

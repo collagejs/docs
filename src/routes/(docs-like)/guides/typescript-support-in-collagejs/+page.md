@@ -15,7 +15,7 @@ In order to take full advantage of all of its features, we need to learn how a f
 
 As you may know, we can statically import from *CollageJS* piece projects, but for TypeScript to be happy about it, we need to create ambient modules for the bare module specifiers we assign to the modules exported by said piece projects.
 
-As this documentation recommends, we export factory piece functions.  To import them and make TypeScript happy, we can do something like this:
+As this documentation recommends, we export factory piece functions from piece projects.  To import them and make TypeScript happy, we can do something like this:
 
 ```typescript
 declare module '@myCollageJs/piece' {

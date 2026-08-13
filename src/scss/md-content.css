@@ -74,6 +74,11 @@
         & tr > td {
             padding: 0.5rem 1rem;
         }
+        & td[colspan] {
+            text-align: center;
+            font-weight: bold;
+            font-size: larger;
+        }
     }
 
     [data-mdsvex-table='table'] {

@@ -86,9 +86,9 @@ This is where the second way to specify import maps come up:  Rename `src/import
 
 Hmm, now things have gotten interesting.  Why like this?  Why not a full URL?  What is this `"piece-prefix"` thing?
 
-Truth be told, this documentation cannot really teach you what to put in the import map that is deployed.  Only you, the developer of the application can ever know for sure what needs to go there.
+Truth be told, this documentation cannot really teach you what to put in the import map that is deployed.  Only you, the developer of the application, can ever know for sure what needs to go there.
 
-So what are we showing?  Our personal favorite:  How we would configure a *CollageJS* application that is deployed to *Kubernetes*.  In Kubernetes, we would configure the application's ingress (an Nginx server managed by K8s) so that any HTTP request that starts with our chosen prefix would be routed to the service that fulfills the delivery of the *ColageJS* piece we want.
+So what are we showing?  Our personal favorite:  How we would configure a *CollageJS* application that is deployed to *Kubernetes*.  In Kubernetes, we would configure the application's ingress (an Nginx server managed by K8s) so that any HTTP request whose pathname starts with our chosen prefix would be routed to the service that fulfills the delivery of the *ColageJS* piece we want.
 
 This would mean that we will create or have already created a piece project, completed it, built it and uploaded to the K8s cluster.
 
@@ -112,7 +112,7 @@ One would need to know a little bit about how Vite works in serve mode (`npm run
 
 The concept of *externalization of modules* is not difficult:  It means that we can tell our bundler (Vite) to not bundle specific ES modules, and we do so by specifying Vite's configuration option `build.rolldownOptions.external`.  *CollageJS* doesn't meddle with this at all.  Feel free to use it if needed.
 
-What *CollageJS* provides is the `@collagejs/vite-aim` plug-in.  *AIM* stands for "Auto-externalize Import Map".  How does it do it?  That's where Vite knowledge comes in handy, but I think we can settle the matter by stating that this plug-in simply tells Vite to externalize a module if the import map it knows can resolve it.  Since this is not a Vite plug-ins lesson, please pardon our lack of willingness to explain further, but if you're interested, read about Rolldown's `resolveId` hook.
+What *CollageJS* provides is the `@collagejs/vite-aim` plug-in.  *AIM* stands for "Auto-externalize Import Map".  How does it do it?  That's where Vite knowledge comes in handy, but we can probably settle the matter by stating that this plug-in simply tells Vite to externalize a module if the import map it knows can resolve it.  Since this is not a Vite plug-ins lesson, please pardon our lack of willingness to explain further, but if you're interested, read about Rolldown's `resolveId` hook.
 
 ### Practical Implications of AIM
 
@@ -131,7 +131,7 @@ Let's get started on the main course:  How do we do this?  Wait a minute:  We ha
 - The preferred option is to use a *CollageJS* framework adapter for the framework our root project uses
 - We mount directly using the `mountPiece` function from the `@collagejs/core` package and manage the lifecycle through the returned object
 
-Our recommendation is to always use a framework adapter.  Are you using a front-end framework or library that doesn't have an adapter?  Feel free to [open an issue and ask for it](https://github.com/collagejs/collagejs/issues/new).  We don't guarantee that we will deliver, but it is a nice start.  Do it regardless of the outcome.  Who knows and maybe more people join the petition.  The more popular a request is, the more priority is given.
+Our recommendation is to always use a framework adapter.  Are you using a front-end framework or library that doesn't have an adapter?  Feel free to [open an issue and ask for it](https://github.com/collagejs/adapter/issues/new?template=adapter-request.md).  We don't guarantee that we will deliver, but it is a nice start.  Do it regardless of the outcome.  Who knows and maybe more people join the petition.  The more popular a request is, the more priority is given.
 
 You are also free to create your own adapter.  You can even use the [guide for official framework adapters](/guides/development-guide-for-adapters) and help yourself out by installing and using [@collagejs/adapter](/api/packages/adapter) to save you work and trouble.  If you made it this far, even consider donating the adapter so more people can find it an use it.  We are all part of the open-source movement, after all.
 

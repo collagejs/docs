@@ -21,6 +21,12 @@ This package contains helper code for the creation of framework adapter librarie
 
 This is a general-purpose asynchronous queue.  It enqueues asynchronous work one after the other.  Its main objective is prevent race conditions.
 
+#### Properties
+
+| Property | Type | Description |
+| - | - | - |
+| `chain` | `Promise<any>` | Gets the internal chain of promises.  Await this chain to flush all pending work. |
+
 #### Methods
 
 ##### _guardDisposed
@@ -47,19 +53,23 @@ constructor(abortChainOnError: boolean = false);
 
 ##### enqueue
 
-This is the main class' method.  It enqueues the provided asynchronous work at the end of the chain of pending promises.
+This is the main class' method.  It enqueues the provided work at the end of the chain of pending promises.
 
 - Enqueuing is a synchronous operation.
-- Enqueuing does not execute the asynchronous operation at all.
-- Unless it is *exactly* what you want, *never* enqueue inside enqueued asynchronous work.
+- Enqueuing does not execute the operation at all.
+- Unless it is *exactly* what you want, *never* enqueue inside enqueued work.
 
 ```typescript
-enqueue<T extends (...args: any[]) => any>(fn: T): Promise<Awaited<ReturnType<T>>>;
+enqueue<
+  T extends (...args: any[]) => any
+>(
+  fn: T
+): Promise<Awaited<ReturnType<T>>>;
 ```
 
 | Parameter | Description |
 | - | - |
-| `fn` | Function that, when executed, performs the desired asynchronous work. |
+| `fn` | Function that, when executed, performs the desired work. |
 
 ###### Return Value
 
@@ -124,6 +134,18 @@ constructor(
 | `relocateFn` | `(source: AcceptableTarget, target: AcceptableTarget) => Promise<boolean>` | `trivialRelocate` | Optional function that performs the relocation of root DOM trees from one parent to another. |
 | `enableLcLogging` | `boolean` | `false` | Enables lifecycle logging for debugging purposes. |
 
+##### enqueue
+
+Is the same as [AsyncQueue.enqueue](#enqueue), but provides the internal `MountedPiece` object via the first parameter.
+
+```typescript
+enqueue<
+  T extends (mp: MountedPiece<TProps, TMeta> | undefined) => any
+>(
+  fn: T
+): Promise<Awaited<ReturnType<T>>>;
+```
+
 ##### mount
 
 Enqueues the mount core piece operation.
@@ -146,10 +168,14 @@ A promise that resolves once the mount operation completes.
 Relocates a core piece's root DOM tree(s) to a new parent object by first attempting relocation if supported.  If relocation is not supported, it performs a mounting cycle.
 
 - Supporting relocation as a core piece developer tends to improve developer experience.
-- Relocation support allows core pieces to maintain internal state.
+- Relocation support allows core pieces to maintain internal state very cheaply.
 
 ```typescript
-relocate(source: AcceptableTarget, target: AcceptableTarget, props: TProps): Promise<void>;
+relocate(
+  source: AcceptableTarget,
+  target: AcceptableTarget,
+  props: TProps
+): Promise<void>;
 ```
 
 | Parameter | Description |
@@ -162,7 +188,7 @@ relocate(source: AcceptableTarget, target: AcceptableTarget, props: TProps): Pro
 
 Transfers que internal promise chain to a new `CorePieceLcQueue` object, and ejects its internal state for cleanup purposes.
 
-- Used in specialty cases, most notably in reactive signals-powered frameworks.
+- Used in specialty cases, most notably when reacting to changes in `shadow` options.
 
 ```typescript
 transferTo(otherQueue: CorePieceLcQueue<TProps, TMeta>): [
@@ -197,7 +223,7 @@ A promise that resolves once the core piece has finished unmounting.
 Updates the mounted core piece object with the given set of properties.
 
 ```typescript
-update(props: TProps): Promise<void>;
+update(props: Partial<TProps>): Promise<void>;
 ```
 
 | Parameter | Description |
@@ -210,11 +236,34 @@ A promise that resolves once the core piece has finished updating.
 
 ## Functions
 
+### extractMountPieceFromProps
+
+Extracts the parent-aware `mountPiece` function from the properties object provided to `CorePiece.mount` functions by the core library when a `mountPiece` function is called.  The property is then deleted.
+
+- Prefer over manual extraction as it deletes the property and leaves the properties object ready to be sent to the core piece.
+
+```typescript
+function extractMountPieceFromProps<
+  TProps extends Record<string, any>
+>(
+  props: MountProps<TProps> | undefined
+): MountPiece | undefined;
+```
+
+| Parameter | Description |
+| - | - |
+| `props` | The properties object received in a `CorePiece.mount` function. |
+
+#### Return Value
+
+The extracted parent-aware `mountPiece` function, or `undefined` if the properties object is falsy or the properties object doesn't carry `mountPiece`.
+
 ### getPieceTarget
 
 Using the given HTML element and shadow option value, returns the correct target object for core piece-mounting.
 
 - This function creates shadow roots without checking for a pre-existing shadow root.
+- To avoid shadow root creation errors, attempt the creation of new containers when reacting to changes in the `shadow` option.
 
 ```typescript
 function getPieceTarget(
@@ -236,10 +285,13 @@ The correct target after taking into account the `shadow` option.
 
 Function that returns the set of `data-` attributes that are normally applied to host elements (the elements used to mount core pieces).
 
-- Official framework adapters always use this function.
+- Official framework adapters always use this function and therefore guarantees the attributes will exist.
+- The attributes can play a very important part in stopping CSS leakage (see the [CSS guide, third tip](/guides/writing-css-for-collagejs#tip-3--scoped-css))
 
 ```typescript
-function hostAttributes(options: HostAttributesOptions): Record<string, string>;
+function hostAttributes(
+  options: HostAttributesOptions
+): Record<string, string>;
 ```
 
 | Parameter | Description |
@@ -257,6 +309,30 @@ function hostAttributes(options: HostAttributesOptions): Record<string, string>;
 
 A POJO whose keys are the `data-` attribute names and their values is the corresponding attribute value.
 
+### sanitizeMeta
+
+Deletes core-defined metadata information from `meta` objects and emits a warning when doing so to inform the developer.
+
+- Preferred way of ensuring core metadata is always calculated as it warns core piece builders.
+
+```typescript
+function sanitizeMeta<
+  TMeta extends Record<string, any>
+>(
+    meta: TMeta | undefined,
+    ...properties: (keyof CorePieceMeta)[]
+): TMeta;
+```
+
+| Parameter | Description |
+| - | - |
+| `meta` | The user-provided metadata object when creating a core piece via a `buildPiece` function. |
+| `properties` | Explicit list of core metadata properties to check for.  Only the properties listed will be sanitized. |
+
+#### Return Value
+
+The same meta object, sanitized.
+
 ### trivialRelocate
 
 Relocates all root DOM trees found in the source object to the target object by simply appending them with `appendChild`.
@@ -264,7 +340,10 @@ Relocates all root DOM trees found in the source object to the target object by 
 - The order of the DOM trees is kept.
 
 ```typescript
-function trivialRelocate(source: AcceptableTarget, target: AcceptableTarget): boolean;
+function trivialRelocate(
+  source: AcceptableTarget,
+  target: AcceptableTarget
+): boolean;
 ```
 
 | Parameter | Description |
@@ -277,6 +356,44 @@ function trivialRelocate(source: AcceptableTarget, target: AcceptableTarget): bo
 A boolean value that indicates success of the operation.
 
 > <Info /> Currently, it always returns true.
+
+### unmountAndTransferLcQueue
+
+Proceeds to unmount the current core piece, then transfers the internal chain of promises to a new lifecycle object that is either explicitly provided, or that it is created with the given construction data.
+
+```typescript
+// Overload 1
+function unmountAndTransferLcQueue<
+  TProps extends Record<string, any> = Record<string, any>
+>(
+  lc: CorePieceLcQueue<TProps>,
+  newLc: CorePieceLcQueue<TProps>,
+): CorePieceLcQueue<TProps>;
+```
+
+```typescript
+// Overload 2
+function unmountAndTransferLcQueue<
+  TProps extends Record<string, any> = Record<string, any>
+>(
+  lc: CorePieceLcQueue<TProps>,
+  newPiece: CorePiece<TProps> | Promise<CorePiece<TProps>>,
+  mountPieceFn: MountPiece<TProps>,
+  options?: CorePieceLcQueueOptions,
+): CorePieceLcQueue<TProps>;
+```
+
+| Parameter | Description |
+| - | - |
+| `lc` | Current lifecycle queue object to be discarded. |
+| `newLc` | New lifecycle queue object that will inherit the current object's chain of promises. |
+| `newPiece` | New core piece object for the eventual new lifecycle queue object. |
+| `mountPieceFn` | The `mountPiece` function to use when mounting the core piece. |
+| `options` | Optional set of options for the new lifecycle queue object. |
+
+#### Return Value
+
+The provided new lifecycle queue object, or the newly created lifecycle queue object.
 
 ## Constants & Objects
 

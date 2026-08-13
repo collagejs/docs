@@ -16,7 +16,7 @@ One of the greatest things that *CollageJS* borrowed from *single-spa* is the us
 
 ## Main Goal
 
-The main goal of import maps is to allow us to put a stable name to a module whose "home" is not yet determined, or that may have multiple "homes" ("home" being the location the code will be uploaded).
+The main goal of import maps is to allow us to put a stable name to a module whose "home" is not yet determined, or that may have multiple "homes" ("home" being the location the code will be uploaded to).
 
 The main use case is locating the modules that export the factory functions for the *CollageJS* pieces we are interested in consuming from our root project or from other piece projects.  Sometimes they reside in the developer's local PC, accessible via Vite's development or preview server; sometimes it is available in a CDN network (like `@collagejs/imo`'s user interface, which is a *CollageJS* piece); sometimes it is deployed in servers for QA testing, pre-production or production environments.
 
@@ -36,7 +36,7 @@ This is largely unimportant technically speaking, but brings order to the table.
 
 *Bare module specifiers* are module specifiers that cannot be interpreted as URL's or URL paths.  They cannot begin with a period or a slash or a protocol.  Need some examples?  Just look at one of your `node_modules` folder.  All those names there are bare module specifiers: `lodash`, `svelte`, `react`, `react-dom`, `@collagejs/core`, etc.
 
-The *single-spa* documentation used to define bare module identifiers as scoped identifiers (because that's what the `@` symbol means in the NPM world), and we don't see anything wrong with that.  As a matter of fact and if you've been reading this documentation in order, you have already encountered several of these, like `@tutorial/calculator`.
+The *single-spa* documentation used to define bare module identifiers as scoped identifiers (because that's what the `@` symbol means in the NPM world), and we don't see anything wrong with that.  As a matter of fact and if you've been reading this documentation in order, you have already encountered several of these, like `@tutorial/calculator`, where `@tutorial` is the scope.
 
 So for your project, maybe assign a scope name that is short and doesn't use weird characters.  Don't be that "original" guy that uses emojis in filenames, please!
 
@@ -96,7 +96,7 @@ export default defineConfig({
 });
 ```
 
-This kind of setup is what the majority of *CollageJS* application will be using.
+This kind of setup is what the majority of *CollageJS* applications will be using:  Shared runtimes in one file, then development-time piece servers separated from production-time piece servers.
 
 ### Defining the Deployment Strategy
 

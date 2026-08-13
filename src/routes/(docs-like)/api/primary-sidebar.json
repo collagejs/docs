@@ -7,36 +7,50 @@
                 "href": "/api/packages/core"
             },
             {
-                "title": "@collagejs/imo",
-                "href": "/api/packages/imo"
-            },
-            {
-                "title": "@collagejs/vite-aim",
-                "href": "/api/packages/vite-aim"
-            },
-            {
-                "title": "@collagejs/vite-css",
-                "href": "/api/packages/vite-css"
-            },
-            {
-                "title": "@collagejs/vite-im",
-                "href": "/api/packages/vite-im"
-            },
-            {
                 "title": "@collagejs/importmap",
                 "href": "/api/packages/importmap"
             },
             {
-                "title": "@collagejs/adapter",
-                "href": "/api/packages/adapter"
+                "title": "@collagejs/imo",
+                "href": "/api/packages/imo"
             },
             {
-                "title": "@collagejs/svelte",
-                "href": "/api/packages/svelte"
+                "title": "Vite",
+                "articles": [
+                    {
+                        "title": "@collagejs/vite-aim",
+                        "href": "/api/packages/vite-aim"
+                    },
+                    {
+                        "title": "@collagejs/vite-css",
+                        "href": "/api/packages/vite-css"
+                    },
+                    {
+                        "title": "@collagejs/vite-im",
+                        "href": "/api/packages/vite-im"
+                    }
+                ]
             },
             {
-                "title": "@collagejs/react",
-                "href": "/api/packages/react"
+                "title": "Adapters",
+                "articles": [
+                    {
+                        "title": "@collagejs/adapter",
+                        "href": "/api/packages/adapter"
+                    },
+                    {
+                        "title": "@collagejs/react",
+                        "href": "/api/packages/react"
+                    },
+                    {
+                        "title": "@collagejs/svelte",
+                        "href": "/api/packages/svelte"
+                    },
+                    {
+                        "title": "@collagejs/vue",
+                        "href": "/api/packages/vue"
+                    }
+                ]
             }
         ]
     }

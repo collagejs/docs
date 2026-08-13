@@ -22,7 +22,6 @@ function unescapePipesInTables(): Transformer {
     };
 }
 
-
 export default defineConfig({
 	plugins: [
 		sveltekit({
@@ -48,7 +47,7 @@ export default defineConfig({
 					unescapePipesInTables,
 				],
 				smartypants: true,
-				layout: join(__dirname, './src/lib/md-layouts/MdLayout.svelte'),
+				layout: join(import.meta.dirname, './src/lib/md-layouts/MdLayout.svelte'),
 			}),
 		}),
 	],

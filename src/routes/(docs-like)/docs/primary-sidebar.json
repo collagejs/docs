@@ -36,7 +36,7 @@
                 "href": "/docs/import-maps-in-collagejs"
             },
             {
-                "title":  "Overriding Import Map Entries",
+                "title": "Overriding Import Map Entries",
                 "href": "/docs/overriding-import-map-entries"
             }
         ]
@@ -47,6 +47,10 @@
             {
                 "title": "Official Adapters",
                 "href": "/docs/official-adapters"
+            },
+            {
+                "title": "Standard Compliance",
+                "href": "/docs/standard-compliance"
             }
         ]
     },
@@ -58,46 +62,33 @@
                 "href": "/docs/configuring-collagejs-imo"
             },
             {
-                "title": "CorePiece Composition",
-                "href": "/docs/corepiece-composition"
-            },
-            {
                 "title": "CorePiece Relocation and Metadata",
                 "href": "/docs/corepiece-relocation-and-metadata"
             },
             {
-                "title": "Development Tips & Tricks",
-                "href": "/docs/development-tips-and-tricks"
+                "title": "CorePiece Composition",
+                "href": "/docs/corepiece-composition"
             }
         ]
     },
     {
-        "title": "Ecosystem",
+        "title": "Vite",
         "articles": [
             {
-                "title": "Supported Frameworks",
-                "href": "/docs/supported-frameworks"
+                "title": "Vite:  Overview",
+                "href": "/docs/vite-overview"
             },
             {
-                "title": "Vite",
-                "articles": [
-                    {
-                        "title": "Overview",
-                        "href": "/docs/vite-overview"
-                    },
-                    {
-                        "title": "Vite-IM Plug-In",
-                        "href": "/docs/vite-im-plugin"
-                    },
-                    {
-                        "title": "Vite-AIM Plug-In",
-                        "href": "/docs/vite-aim-plugin"
-                    },
-                    {
-                        "title": "Vite-CSS Plug-In",
-                        "href": "/docs/vite-css-plugin"
-                    }
-                ]
+                "title": "Vite-IM Plug-In",
+                "href": "/docs/vite-im-plugin"
+            },
+            {
+                "title": "Vite-AIM Plug-In",
+                "href": "/docs/vite-aim-plugin"
+            },
+            {
+                "title": "Vite-CSS Plug-In",
+                "href": "/docs/vite-css-plugin"
             }
         ]
     }

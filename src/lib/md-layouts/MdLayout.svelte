@@ -27,6 +27,7 @@
     import H1 from './headers/H1.svelte';
     import { scrollDoc, ScrollDocContext } from '$lib/scrollDocContext.svelte.js';
     import { TableContext, setTableContext } from 'mdsvex-table';
+    import { page } from '$app/state';
 
     type Props = {
         title: string;
@@ -52,7 +53,7 @@
     let scroll = $derived(scrollDocCtx?.value ?? true);
 
     $effect(() => {
-        if (!scroll) {
+        if (!scroll || page.url.hash) {
             return;
         }
         topEl?.scrollIntoView({ behavior: 'smooth', block: 'start' });

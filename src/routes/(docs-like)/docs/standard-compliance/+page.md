@@ -82,7 +82,7 @@ These are the definitions of the standardizations for piece mounting:
 | Property namespace belongs to core piece | Properties passed to `Piece` are all forwarded to the core piece. |
 | `Piece` is configured via the `piece` function | The helper function `piece` is used to configure the `Piece` component. |
 | `piece` standard parameters | `(corePiece, options)`, where `options` is optional. |
-| `piece` standard minimum options | <ul><Li><code>shadow?: boolean \| ShadowRootInit</code></Li><Li><code>containerProps?: FrameworkSpecificType</code></Li><ul> |
+| `piece` standard minimum options | <ul><Li><code>shadow?: boolean \| ShadowRootInit</code></Li><Li><code>containerProps?: FrameworkSpecificType</code></Li></ul> |
 | Updates reactively | The `Piece` component is capable of transmit updated properties to the core piece. |
 | Relocates when appropriate | Calls the core piece's <code>relocate</code> lifecycle whenever appropriate, for example whenever the <code>shadow</code> setting changes in runtime. |
 

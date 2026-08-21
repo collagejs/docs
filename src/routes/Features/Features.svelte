@@ -10,21 +10,21 @@
         <ul class="list">
             <li>
                 <StarPlus size="1em" color="var(--cjs-primary-200)" />&nbsp;<a
-                    href="https://collagejs.dev/"
-                    target="_blank">Vite-IM</a
-                > - Import Map Handling
+                    href="/docs/vite-im-plugin">
+                    Vite-IM
+                </a> - Import Map Handling
             </li>
             <li>
                 <StarPlus size="1em" color="var(--cjs-primary-200)" />&nbsp;<a
-                    href="https://collagejs.dev/"
-                    target="_blank">Vite-CSS</a
-                > - CSS Injection
+                    href="/docs/vite-css-plugin">
+                    Vite-CSS
+                </a> - CSS Injection
             </li>
             <li>
                 <StarPlus size="1em" color="var(--cjs-primary-200)" />&nbsp;<a
-                    href="https://collagejs.dev/"
-                    target="_blank">Vite-AIM</a
-                > - Automatic externalization
+                    href="/docs/vite-aim-plugin">
+                    Vite-AIM
+                </a> - Automatic externalization
             </li>
         </ul>
     </Card>

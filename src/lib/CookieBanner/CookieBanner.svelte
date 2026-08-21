@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { dismissCookieBanner, hasCookieBannerBeenDismissed } from '$lib/cookies.js';
-    import { Palette } from '@lucide/svelte';
+    import { MonitorSmartphone, Palette } from '@lucide/svelte';
 
     let show = $state(false);
 
@@ -16,15 +16,13 @@
 </script>
 
 {#if show}
-    <div class="cookie-banner cjs-glass" role="dialog" aria-live="polite" aria-label="Cookie notice">
+    <div class="cookie-banner cjs-glass cjs-glass-strong" role="dialog" aria-live="polite" aria-label="Cookie notice">
         <p>
-            This site uses two cookies: Your color palette selection (<Palette
-                size="1.2em"
-                class="cjs-text-primary"
-                strokeWidth="3"
-            />) and a screen-width value used to render tables correctly on smaller screens.
+            This site uses two cookies: Your color palette selection (<Palette size="1.2em" strokeWidth="3" />) and a
+            screen-width value (<MonitorSmartphone size="1.2em" strokeWidth="3" />) used to render tables correctly on
+            smaller screens.
         </p>
-        <button type="button" class="cjs-btn cjs-btn-sm cjs-btn-primary" onclick={handleDismiss}> OK </button>
+        <button type="button" class="cjs-btn cjs-btn-sm cjs-btn-secondary" onclick={handleDismiss}> OK </button>
     </div>
 {/if}
 

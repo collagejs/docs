@@ -1,11 +1,12 @@
 <script lang="ts">
 	import favicon from '@collagejs/core/logo/16';
 	import '../scss/app.scss';
-    import { paletteCookie, renderAsListCookie } from '$lib/cookies.js';
+	import { paletteCookie, renderAsListCookie } from '$lib/cookies.js';
+	import CookieBanner from '$lib/CookieBanner/CookieBanner.svelte';
 	import { PaletteContext, setPalette, RenderAsListContext, setRenderAsList } from '$lib/contexts.svelte.js';
 
 	let { children, data } = $props();
-	
+
 	// svelte-ignore state_referenced_locally
 	const palette = new PaletteContext(data.palette);
 	setPalette(palette);
@@ -32,6 +33,8 @@
 	<div class="content d-flex flex-column overflow-auto">
 		{@render children()}
 	</div>
+
+	<CookieBanner />
 </div>
 
 <style>

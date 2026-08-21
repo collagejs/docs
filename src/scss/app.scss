@@ -51,3 +51,14 @@ a.active {
     color: var(--cjs-primary-400);
     text-decoration: underline;
 }
+
+/*
+WORKAROUND
+
+https://github.com/vitejs/vite/issues/21954
+*/
+[data-collagejs-theme] .cjs-glass,
+.cjs-themed .cjs-glass {
+  -webkit-backdrop-filter: blur(var(--cjs-glass-blur)) saturate(var(--cjs-glass-saturation));
+  backdrop-filter: blur(var(--cjs-glass-blur)) saturate(var(--cjs-glass-saturation));
+}

@@ -155,9 +155,9 @@ const mountedPiece = await mountPiece(myPiece, target, {
 
 In order, the parameters to `mountPiece` are:
 
-- `piece: CorePiece<TProps, TMeta>` -- The piece object to mount
+- `piece: CorePiece<TProps, TMeta>` -- The piece object to mount (or a promise to it; type simplified)
 - `target: AcceptableTarget` -- The parent object that will host the piece's user interface
-- `props: TProps` -- The properties accepted by the piece object
+- `props: TProps` -- The initial property values for the piece object
 
 The returned `mountedPiece` object is of type `MountedPiece` and provides an interface almost identical to that of `CorePiece`, where:
 

@@ -18,3 +18,12 @@ The build process runs it, and can be run on demand:
 ```sh
 npm run check:links
 ```
+
+### generate-sitemap.ts
+
+Generates `/sitemap.xml` for the website.
+
+> [!NOTE]
+> **Improvement Pending**
+>
+> Sitemap handling must be improved.  Last modification date needs to be more precise and should be checked-in to preserve last modification dates of documents not touched in posterior iterations.

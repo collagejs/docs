@@ -28,6 +28,7 @@
     import { scrollDoc, ScrollDocContext } from '$lib/scrollDocContext.svelte.js';
     import { TableContext, setTableContext } from 'mdsvex-table';
     import { page } from '$app/state';
+    import { renderAsList } from '$lib/contexts.svelte.js';
 
     type Props = {
         title: string;
@@ -49,6 +50,8 @@
     }
     catch { }
 
+    let renderAsListCtx = renderAsList();
+
     let topEl: HTMLElement | null = null;
     let scroll = $derived(scrollDocCtx?.value ?? true);
 
@@ -59,7 +62,9 @@
         topEl?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 
-    setTableContext(new TableContext());
+    setTableContext(new TableContext({
+        ssrBehavior: renderAsListCtx.value ? 'list' : 'table'
+    }));
 </script>
 
 <svelte:head>

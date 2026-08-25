@@ -35,7 +35,6 @@ function cjsCssPlugin(
 | Option | Type | Default Value | Description |
 | - | - | - | - |
 | `serverPort` | `number` | | Fixes the project's server port (development and preview) to the specified value. |
-| `localhostSsl` | `boolean` | `false` | Tells the plug-in to configure origins using HTTPS instead of HTTP. |
 | `input` | `string | string[]` | `'src/piece.ts'` | File or list of files to configure as entry modules. |
 | `projectId` | `string` | `undefined` | Unique project identifier that is introduced in CSS file names to support the CSS algorithm.  When not defined, the project's name from `package.json` is used. |
 | `assetFileNames` | `string` | `'assets/[name]-[hash][extname]'` | Asset file name pattern for bundled assets.  CSS file names will be of the form `'cjcss(<project id>)<pattern>'` as the plug-in must control the CSS file names to a minimum extent. |

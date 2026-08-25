@@ -283,7 +283,7 @@ As seen, the code migrations are quite simple and familiar while still gaining s
 - Don't fight or work around layout issues coming from the unmaintained layout engine from `single-spa` and instead route like a boss with your favorite router
 - If an adapter exists for your framework, it covers both creating pieces and mounting pieces, not just one
 - Isolate pieces easily by mounting them in shadow DOM
-- No more name collisions on the property namespace for pieces and the `<Piece>` component used to mount it
+- No more name collisions on the property namespace for pieces and the `<Piece>` component used to mount them
 - No issues with React's *Strict Mode* as `@collagejs/react` works perfectly under it
 - All options for React's `createRoot` can be specified
 - React, Svelte and Vue all provide the `update` lifecycle
